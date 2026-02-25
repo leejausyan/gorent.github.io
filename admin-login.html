@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login - GoRent</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-[#0d1117] via-[#161b22] to-[#0d1117] flex items-center justify-center min-h-screen p-4">
+
+  <div class="w-full max-w-md">
+    <!-- Header Card -->
+    <div class="bg-gradient-to-r from-[#1c2128] to-[#161b22] border border-[#30363d] rounded-t-2xl p-8 shadow-2xl">
+      <div class="flex items-center justify-center mb-4">
+        <img src="images/JMMI-rm.png" alt="JMMI Logo" class="w-12 h-12 mr-3 object-contain" />
+        <h1 class="text-3xl font-bold text-white">JMMI GoRent</h1>
+      </div>
+      <p class="text-center text-[#8b949e] text-sm">Admin Panel Login</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="bg-[#0d1117] border border-t-0 border-[#30363d] rounded-b-2xl p-8 shadow-2xl">
+      
+      <!-- Welcome Message -->
+      <div class="text-center mb-6">
+        <svg class="w-16 h-16 text-[#1f6feb] mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+        </svg>
+        <h2 class="text-xl font-bold text-[#c9d1d9] mb-2">Selamat Datang Admin</h2>
+        <p class="text-[#8b949e] text-sm">Silakan login dengan username dan password</p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="space-y-4">
+        <div class="group">
+          <label class="block text-sm font-semibold text-[#c9d1d9] mb-2">Username</label>
+          <input 
+            type="text" 
+            id="username" 
+            placeholder="Masukkan username" 
+            required 
+            class="w-full px-4 py-3 bg-[#161b22] border border-[#30363d] rounded-lg text-[#c9d1d9] placeholder-[#6e7681] focus:outline-none focus:border-[#1f6feb] focus:ring-2 focus:ring-[#1f6feb]/20 transition-all duration-200"
+          />
+        </div>
+
+        <div class="group">
+          <label class="block text-sm font-semibold text-[#c9d1d9] mb-2">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            placeholder="Masukkan password" 
+            required 
+            class="w-full px-4 py-3 bg-[#161b22] border border-[#30363d] rounded-lg text-[#c9d1d9] placeholder-[#6e7681] focus:outline-none focus:border-[#1f6feb] focus:ring-2 focus:ring-[#1f6feb]/20 transition-all duration-200"
+          />
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="hidden bg-red-900/30 border border-red-700/50 rounded-lg p-3 text-red-400 text-sm"></div>
+
+        <!-- Login Button -->
+        <button 
+          type="submit"
+          id="loginButton"
+          class="w-full bg-gradient-to-r from-[#1f6feb] to-[#58a6ff] text-white font-semibold py-3 px-4 rounded-lg hover:from-[#388bfd] hover:to-[#79c0ff] focus:outline-none focus:ring-2 focus:ring-[#1f6feb]/50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 flex items-center justify-center"
+        >
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          Login
+        </button>
+      </form>
+
+      <!-- Info Box -->
+      <div class="mt-6 bg-blue-900/20 border border-blue-700/50 rounded-lg p-4">
+        <p class="text-[#58a6ff] text-xs text-center">
+          🔒 Hanya admin yang terdaftar yang dapat mengakses panel
+        </p>
+      </div>
+
+      <!-- Back to Home -->
+      <div class="mt-6 text-center">
+        <a href="index.html" class="text-[#58a6ff] hover:text-[#79c0ff] text-sm transition-colors">
+          ← Kembali ke Halaman Utama
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Config File -->
+  <script src="config.js"></script>
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // Check if already logged in
+    if (localStorage.getItem('adminLoggedIn') === 'true') {
+      window.location.href = 'admin-panel.html';
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Validate credentials
+      if (username === window.ADMIN_CREDENTIALS.username && 
+          password === window.ADMIN_CREDENTIALS.password) {
+        // Login successful
+        localStorage.setItem('adminLoggedIn', 'true');
+        localStorage.setItem('adminUsername', username);
+        window.location.href = 'admin-panel.html';
+      } else {
+        // Login failed
+        errorMessage.textContent = '❌ Username atau password salah!';
+        errorMessage.classList.remove('hidden');
+        
+        // Clear after 3 seconds
+        setTimeout(() => {
+          errorMessage.classList.add('hidden');
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>

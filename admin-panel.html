@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - GoRent</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-[#0d1117] via-[#161b22] to-[#0d1117] min-h-screen p-4">
+
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="fixed inset-0 bg-[#0d1117] flex items-center justify-center z-50">
+    <div class="text-center">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1f6feb] mb-4"></div>
+      <p class="text-[#8b949e]">Memverifikasi akses...</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="mainContent" class="max-w-7xl mx-auto hidden">
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-[#1c2128] to-[#161b22] border border-[#30363d] rounded-2xl p-6 shadow-2xl mb-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <img src="images/JMMI-rm.png" alt="JMMI Logo" class="w-10 h-10 mr-3 object-contain" />
+          <div>
+            <h1 class="text-2xl font-bold text-white">Admin Panel</h1>
+            <p class="text-[#8b949e] text-sm">JMMI GoRent Management</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="text-right">
+            <p class="text-[#c9d1d9] font-semibold" id="userName">Admin</p>
+            <p class="text-[#8b949e] text-xs">Logged in</p>
+          </div>
+          <button 
+            id="logoutButton"
+            class="bg-red-900/30 border border-red-700/50 text-red-400 px-4 py-2 rounded-lg hover:bg-red-900/50 transition-all duration-200"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="bg-[#1c2128] border border-[#30363d] rounded-xl p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[#8b949e] text-sm">Total Peminjaman</p>
+            <p id="totalRentals" class="text-3xl font-bold text-[#c9d1d9] mt-1">0</p>
+          </div>
+          <div class="bg-[#1f6feb]/20 p-3 rounded-lg">
+            <svg class="w-8 h-8 text-[#1f6feb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-[#1c2128] border border-[#30363d] rounded-xl p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[#8b949e] text-sm">Menunggu Verifikasi</p>
+            <p id="pendingRentals" class="text-3xl font-bold text-yellow-400 mt-1">0</p>
+          </div>
+          <div class="bg-yellow-400/20 p-3 rounded-lg">
+            <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-[#1c2128] border border-[#30363d] rounded-xl p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[#8b949e] text-sm">Terverifikasi</p>
+            <p id="verifiedRentals" class="text-3xl font-bold text-[#3fb950] mt-1">0</p>
+          </div>
+          <div class="bg-[#3fb950]/20 p-3 rounded-lg">
+            <svg class="w-8 h-8 text-[#3fb950]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rentals Table -->
+    <div class="bg-[#0d1117] border border-[#30363d] rounded-2xl p-6 shadow-2xl">
+      
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-[#c9d1d9]">Daftar Peminjaman</h2>
+        <button 
+          onclick="loadRentals()"
+          class="bg-[#1f6feb] text-white px-4 py-2 rounded-lg hover:bg-[#388bfd] transition-all duration-200 flex items-center gap-2"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Refresh
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div id="tableLoading" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1f6feb] mb-4"></div>
+        <p class="text-[#8b949e]">Memuat data...</p>
+      </div>
+
+      <!-- Rentals List -->
+      <div id="rentalsList" class="hidden space-y-4">
+        <!-- Rentals will be populated here -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="hidden text-center py-12">
+        <svg class="w-16 h-16 text-[#6e7681] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+        </svg>
+        <p class="text-[#8b949e]">Belum ada data peminjaman</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Config File -->
+  <script src="config.js"></script>
+  <!-- Admin Panel Script -->
+  <script src="admin.js"></script>
+</body>
+</html>
