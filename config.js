@@ -6,7 +6,7 @@ const SUPABASE_CONFIG = {
   // Ganti dengan URL dan KEY Supabase Anda
   // Cara mendapatkan: https://supabase.com/dashboard > Project > Settings > API
   url: 'https://pnwnxewxxobkbvtubbls.supabase.co',
-  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBud254ZXd4eG9ia2J2dHViYmxzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU5NjI2NTYsImV4cCI6MjA1MTUzODY1Nn0.buVDfSNtGNHpN4FUVbx-7bZ5QOmGbXNqJy7OEPJdG_c' // Public anon key (aman untuk frontend)
+  anonKey: 'sb_publishable_IZHkrVwXtiBjTIqDdX3rUQ_57CE7sV7' // Public anon key (aman untuk frontend)
 };
 
 // Admin credentials - UNTUK DEMO SAJA
