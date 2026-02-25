@@ -7,10 +7,9 @@ const priceDisplay = document.getElementById("priceDisplay");
 const totalPriceElement = document.getElementById("totalPrice");
 const selectedItemsElement = document.getElementById("selectedItems");
 
-// Check if Supabase is configured
+// Check if Supabase is configured - log only, don't alert yet
 if (!window.supabaseClient) {
-  console.error('Supabase is not configured! Please check config.js');
-  alert('Error: Database belum dikonfigurasi. Silakan hubungi administrator.');
+  console.warn('⚠️ Supabase client not initialized yet. Will check again on form submit.');
 }
 
 // File upload feedback

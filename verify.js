@@ -6,25 +6,35 @@ const loadingState = document.getElementById('loadingState');
 const errorState = document.getElementById('errorState');
 const dataState = document.getElementById('dataState');
 
+console.log('🔍 Verify Page - Rental ID:', rentalId);
+console.log('🔍 Supabase Client Status:', window.supabaseClient ? '✅ Ready' : '❌ Not Ready');
+
 // Check if Supabase is configured
 if (!window.supabaseClient) {
-  console.error('Supabase is not configured! Please check config.js');
-  showError();
+  console.error('❌ Supabase is not configured! Please check config.js');
+  showError('Database belum terkonfigurasi');
+} else {
+  // Fetch data when page loads
+  fetchRentalData();
 }
 
 // Fetch rental data
 async function fetchRentalData() {
   if (!rentalId) {
-    showError();
+    console.error('❌ No rental ID provided in URL');
+    showError('ID peminjaman tidak ditemukan di URL');
     return;
   }
 
   if (!window.supabaseClient) {
-    showError();
+    console.error('❌ Supabase client not available');
+    showError('Database belum terkonfigurasi');
     return;
   }
 
   try {
+    console.log('📡 Fetching rental data for ID:', rentalId);
+    
     // Query data from Supabase
     const { data, error } = await window.supabaseClient
       .from('rentals')
@@ -32,22 +42,39 @@ async function fetchRentalData() {
       .eq('id', rentalId)
       .single();
     
-    if (error || !data) {
-      showError();
+    console.log('📦 Supabase Response:', { data, error });
+    
+    if (error) {
+      console.error('❌ Supabase Error:', error);
+      showError('Data tidak ditemukan: ' + error.message);
+      return;
+    }
+    
+    if (!data) {
+      console.error('❌ No data returned');
+      showError('Data peminjaman tidak ditemukan');
       return;
     }
 
+    console.log('✅ Data found, displaying...');
     displayRentalData(data);
   } catch (error) {
-    console.error('Error fetching rental data:', error);
-    showError();
+    console.error('❌ Error fetching rental data:', error);
+    showError('Terjadi kesalahan: ' + error.message);
   }
 }
 
-function showError() {
+function showError(message = 'Data tidak ditemukan') {
   loadingState.classList.add('hidden');
   errorState.classList.remove('hidden');
   dataState.classList.add('hidden');
+  
+  // Update error message if element exists
+  const errorMessageEl = errorState.querySelector('p');
+  if (errorMessageEl && message) {
+    errorMessageEl.textContent = message;
+  }
+  console.error('🚫 Showing error state:', message);
 }
 
 function displayRentalData(data) {
@@ -125,5 +152,4 @@ function displayRentalData(data) {
   }
 }
 
-// Load data on page load
-fetchRentalData();
+// Data akan otomatis di-fetch saat page load (lihat di atas)

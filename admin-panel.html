@@ -6,8 +6,6 @@
   <title>Admin Panel - GoRent</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase JS Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gradient-to-br from-[#0d1117] via-[#161b22] to-[#0d1117] min-h-screen p-4">
 
@@ -131,9 +129,11 @@
 
   </div>
 
-  <!-- Config File -->
+  <!-- Supabase JS Client - HARUS DIMUAT PERTAMA -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Config File - Inisialisasi Supabase -->
   <script src="config.js"></script>
-  <!-- Admin Panel Script -->
+  <!-- Admin Panel Script - Logic aplikasi -->
   <script src="admin.js"></script>
 </body>
 </html>
