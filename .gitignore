@@ -1,8 +1,4 @@
-# Dependencies
-node_modules/
-package-lock.json
-
-# Environment variables
+# Environment variables (jangan commit credentials!)
 .env
 config.local.js
 
@@ -16,4 +12,3 @@ Thumbs.db
 
 # Logs
 *.log
-npm-debug.log*

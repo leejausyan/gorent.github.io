@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JMMI GoRent - Documentation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-[#0d1117] via-[#161b22] to-[#0d1117] min-h-screen p-8">
+  
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-[#1c2128] border border-[#30363d] rounded-2xl p-8 shadow-2xl">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-center mb-8">
+        <img src="images/JMMI-rm.png" alt="JMMI Logo" class="w-16 h-16 mr-4 object-contain" />
+        <h1 class="text-4xl font-bold text-white">JMMI GoRent</h1>
+      </div>
+      
+      <p class="text-center text-[#8b949e] text-lg mb-12">
+        Sistem Peminjaman Alat - Static Web App
+      </p>
+
+      <!-- Quick Links -->
+      <div class="grid md:grid-cols-2 gap-6 mb-12">
+        
+        <!-- User Portal -->
+        <a href="index.html" class="bg-[#161b22] border border-[#30363d] rounded-xl p-6 hover:border-[#1f6feb] transition-all duration-200 block">
+          <div class="text-[#58a6ff] mb-3">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-white mb-2">Form Peminjaman</h2>
+          <p class="text-[#8b949e] text-sm">Isi form untuk pinjam alat</p>
+        </a>
+
+        <!-- Verify -->
+        <a href="verify.html" class="bg-[#161b22] border border-[#30363d] rounded-xl p-6 hover:border-[#1f6feb] transition-all duration-200 block">
+          <div class="text-[#3fb950] mb-3">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-white mb-2">Cek Status</h2>
+          <p class="text-[#8b949e] text-sm">Lihat status peminjaman Anda</p>
+        </a>
+
+        <!-- Admin -->
+        <a href="admin-login.html" class="bg-[#161b22] border border-[#30363d] rounded-xl p-6 hover:border-[#1f6feb] transition-all duration-200 block">
+          <div class="text-[#f85149] mb-3">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-white mb-2">Admin Panel</h2>
+          <p class="text-[#8b949e] text-sm">Login untuk kelola peminjaman</p>
+        </a>
+
+        <!-- Docs -->
+        <a href="README.md" target="_blank" class="bg-[#161b22] border border-[#30363d] rounded-xl p-6 hover:border-[#1f6feb] transition-all duration-200 block">
+          <div class="text-[#bc8cff] mb-3">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-white mb-2">Dokumentasi</h2>
+          <p class="text-[#8b949e] text-sm">Baca dokumentasi lengkap</p>
+        </a>
+
+      </div>
+
+      <!-- Quick Setup Guide -->
+      <div class="bg-[#0d1117] border border-[#30363d] rounded-xl p-6 mb-8">
+        <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+          <svg class="w-6 h-6 mr-2 text-[#58a6ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          Quick Setup
+        </h3>
+        <ol class="space-y-3 text-[#8b949e]">
+          <li class="flex">
+            <span class="text-[#58a6ff] font-bold mr-3">1.</span>
+            <span>Setup Supabase database (lihat <code class="bg-[#161b22] px-2 py-1 rounded text-[#c9d1d9]">SETUP.md</code>)</span>
+          </li>
+          <li class="flex">
+            <span class="text-[#58a6ff] font-bold mr-3">2.</span>
+            <span>Update credentials di <code class="bg-[#161b22] px-2 py-1 rounded text-[#c9d1d9]">config.js</code></span>
+          </li>
+          <li class="flex">
+            <span class="text-[#58a6ff] font-bold mr-3">3.</span>
+            <span>Test lokal dengan membuka <code class="bg-[#161b22] px-2 py-1 rounded text-[#c9d1d9]">index.html</code></span>
+          </li>
+          <li class="flex">
+            <span class="text-[#58a6ff] font-bold mr-3">4.</span>
+            <span>Deploy ke GitHub Pages (lihat <code class="bg-[#161b22] px-2 py-1 rounded text-[#c9d1d9]">DEPLOY.md</code>)</span>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Tech Stack -->
+      <div class="border-t border-[#30363d] pt-6">
+        <h3 class="text-sm font-semibold text-[#8b949e] mb-4">Tech Stack</h3>
+        <div class="flex flex-wrap gap-2">
+          <span class="px-3 py-1 bg-[#161b22] border border-[#30363d] rounded-full text-xs text-[#c9d1d9]">HTML5</span>
+          <span class="px-3 py-1 bg-[#161b22] border border-[#30363d] rounded-full text-xs text-[#c9d1d9]">JavaScript</span>
+          <span class="px-3 py-1 bg-[#161b22] border border-[#30363d] rounded-full text-xs text-[#c9d1d9]">Tailwind CSS</span>
+          <span class="px-3 py-1 bg-[#161b22] border border-[#30363d] rounded-full text-xs text-[#c9d1d9]">Supabase</span>
+          <span class="px-3 py-1 bg-[#161b22] border border-[#30363d] rounded-full text-xs text-[#c9d1d9]">GitHub Pages</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-8 text-[#8b949e] text-sm">
+      <p>JMMI GoRent v1.0 - Static Web Application</p>
+      <p class="mt-2">No Node.js, no npm - Just simple HTML, JS & Supabase! 🚀</p>
+    </div>
+
+  </div>
+
+</body>
+</html>
