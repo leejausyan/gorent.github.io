@@ -113,6 +113,92 @@ tanggalKembaliInput.addEventListener("change", () => {
   updatePriceDisplay();
 });
 
+// Check if items are available for the selected dates
+async function checkItemAvailability(selectedItems, startDate, endDate) {
+  if (!window.supabaseClient) {
+    throw new Error('Database tidak tersedia');
+  }
+
+  console.log('🔍 Checking availability for:', {
+    items: selectedItems,
+    startDate,
+    endDate
+  });
+
+  try {
+    // Query all rentals that are VERIFIED or MENUNGGU_VERIFIKASI (not DITOLAK)
+    const { data: existingRentals, error } = await window.supabaseClient
+      .from('rentals')
+      .select('item_1, item_2, item_3, item_4, tanggal_sewa, tanggal_kembali, status')
+      .in('status', ['VERIFIED', 'MENUNGGU_VERIFIKASI', 'SELESAI'])
+      .not('tanggal_sewa', 'is', null)
+      .not('tanggal_kembali', 'is', null);
+
+    if (error) {
+      console.error('❌ Error checking availability:', error);
+      throw error;
+    }
+
+    console.log('📦 Found existing rentals:', existingRentals?.length || 0);
+
+    if (!existingRentals || existingRentals.length === 0) {
+      console.log('✅ No existing rentals, all items available');
+      return { available: true };
+    }
+
+    const requestStart = new Date(startDate);
+    const requestEnd = new Date(endDate);
+
+    // Check for conflicts
+    const conflicts = [];
+
+    existingRentals.forEach(rental => {
+      const rentalStart = new Date(rental.tanggal_sewa);
+      const rentalEnd = new Date(rental.tanggal_kembali);
+
+      // Check if dates overlap
+      const hasOverlap = requestStart <= rentalEnd && requestEnd >= rentalStart;
+
+      if (hasOverlap) {
+        // Check if any of the requested items are in this rental
+        const rentalItems = [rental.item_1, rental.item_2, rental.item_3, rental.item_4]
+          .filter(item => item && item.trim() !== '');
+
+        const conflictingItems = selectedItems.filter(item => rentalItems.includes(item));
+
+        if (conflictingItems.length > 0) {
+          conflicts.push({
+            items: conflictingItems,
+            startDate: rental.tanggal_sewa,
+            endDate: rental.tanggal_kembali,
+            status: rental.status
+          });
+        }
+      }
+    });
+
+    if (conflicts.length > 0) {
+      console.log('⚠️ Found conflicts:', conflicts);
+      
+      // Get unique conflicting items
+      const uniqueConflicts = [...new Set(conflicts.flatMap(c => c.items))];
+      
+      return {
+        available: false,
+        conflicts: uniqueConflicts,
+        message: `Alat berikut sudah dibooking pada tanggal tersebut: ${uniqueConflicts.join(', ')}. Silakan pilih tanggal lain atau alat yang berbeda.`
+      };
+    }
+
+    console.log('✅ All items available for selected dates');
+    return { available: true };
+
+  } catch (error) {
+    console.error('❌ Error in checkItemAvailability:', error);
+    throw error;
+  }
+}
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -149,12 +235,49 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  // Show loading status
+  // Show loading status for checking availability
   statusText.classList.remove("hidden", "bg-red-900/30", "text-red-400", "border-red-700/50");
   statusText.classList.add("bg-blue-900/30", "text-blue-400", "border", "border-blue-700/50");
-  statusText.innerText = "Mengirim data...";
+  statusText.innerText = "Mengecek ketersediaan alat...";
 
   try {
+    // Get selected items
+    const selectedItems = Array.from(selectedCheckboxes).map(cb => cb.value);
+
+    // Check availability
+    console.log('🔍 Checking availability before booking...');
+    const availabilityCheck = await checkItemAvailability(selectedItems, tanggalSewa, tanggalKembali);
+
+    if (!availabilityCheck.available) {
+      // Show error message with details
+      statusText.classList.remove("bg-blue-900/30", "text-blue-400", "border-blue-700/50");
+      statusText.classList.add("bg-red-900/30", "text-red-400", "border", "border-red-700/50");
+      
+      const conflictItems = availabilityCheck.conflicts.join(', ');
+      const errorMessage = `⚠️ Alat tidak tersedia!\n\n${conflictItems} sudah dibooking pada tanggal yang Anda pilih.\n\nSilakan:\n• Pilih tanggal lain, atau\n• Pilih alat yang berbeda`;
+      
+      statusText.innerHTML = `
+        <div class="text-left">
+          <div class="font-bold mb-2">⚠️ Alat Tidak Tersedia</div>
+          <div class="text-sm mb-2">Alat berikut sudah dibooking:</div>
+          <div class="font-semibold mb-2">${conflictItems}</div>
+          <div class="text-xs">Silakan pilih tanggal lain atau alat yang berbeda</div>
+        </div>
+      `;
+      
+      // Also show alert
+      alert(errorMessage);
+      
+      // Scroll to status message
+      statusText.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    console.log('✅ Items available, proceeding with booking...');
+
+    // Update status to uploading
+    statusText.innerText = "Mengirim data...";
+
     // Prepare items data (item_1, item_2, item_3, item_4)
     const itemsData = {
       item_1: "",
