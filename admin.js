@@ -77,6 +77,8 @@ function updateStats(total, pending, verified) {
 
 // Create rental card
 function createRentalCard(rental) {
+  console.log('🔍 Creating card for rental:', rental.id, 'Type:', typeof rental.id);
+  
   const card = document.createElement('div');
   card.className = 'bg-[#1c2128] border border-[#30363d] rounded-xl p-6 hover:border-[#1f6feb] transition-all duration-200';
   
@@ -145,24 +147,33 @@ function attachButtonListeners() {
   console.log('🔧 Attaching button listeners...');
   
   document.querySelectorAll('.btn-verify').forEach(btn => {
-    btn.addEventListener('click', async function() {
-      const id = parseInt(this.getAttribute('data-id'));
+    btn.addEventListener('click', async function(e) {
+      e.preventDefault();
+      const dataId = this.getAttribute('data-id');
+      console.log('✅ Raw data-id:', dataId);
+      const id = dataId; // Keep as string, might be UUID
       console.log('✅ Verify clicked for ID:', id);
       await handleVerify(id);
     });
   });
   
   document.querySelectorAll('.btn-reject').forEach(btn => {
-    btn.addEventListener('click', async function() {
-      const id = parseInt(this.getAttribute('data-id'));
+    btn.addEventListener('click', async function(e) {
+      e.preventDefault();
+      const dataId = this.getAttribute('data-id');
+      console.log('❌ Raw data-id:', dataId);
+      const id = dataId; // Keep as string, might be UUID
       console.log('❌ Reject clicked for ID:', id);
       await handleReject(id);
     });
   });
   
   document.querySelectorAll('.btn-delete').forEach(btn => {
-    btn.addEventListener('click', async function() {
-      const id = parseInt(this.getAttribute('data-id'));
+    btn.addEventListener('click', async function(e) {
+      e.preventDefault();
+      const dataId = this.getAttribute('data-id');
+      console.log('🗑️ Raw data-id:', dataId);
+      const id = dataId; // Keep as string, might be UUID
       console.log('🗑️ Delete clicked for ID:', id);
       await handleDelete(id);
     });
