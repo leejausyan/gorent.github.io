@@ -104,6 +104,8 @@ function displayRentalData(data) {
   document.getElementById('nama').textContent = data.nama || '-';
   document.getElementById('noHp').textContent = data.no_hp || '-';
   document.getElementById('alamat').textContent = data.alamat || '-';
+  document.getElementById('instansi').textContent = data.instansi || '-';
+  document.getElementById('keperluan').textContent = data.keperluan || '-';
   
   // Format rental date
   if (data.tanggal_sewa) {

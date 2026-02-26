@@ -370,6 +370,8 @@ form.addEventListener("submit", async (e) => {
       nama: document.getElementById("nama").value,
       no_hp: document.getElementById("no_hp").value,
       alamat: document.getElementById("alamat").value,
+      instansi: document.getElementById("instansi").value,
+      keperluan: document.getElementById("keperluan").value,
       ...itemsData,
       price_total: totalPrice,
       tanggal_sewa: tanggalSewa,

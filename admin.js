@@ -191,7 +191,9 @@ function createRentalCard(rental) {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
           <div><p class="text-[#8b949e] text-sm">No. HP:</p><p class="text-[#c9d1d9] font-medium">${rental.no_hp || '-'}</p></div>
           <div><p class="text-[#8b949e] text-sm">Alamat:</p><p class="text-[#c9d1d9] font-medium">${rental.alamat || '-'}</p></div>
+          <div><p class="text-[#8b949e] text-sm">Instansi:</p><p class="text-[#c9d1d9] font-medium">${rental.instansi || '-'}</p></div>
           <div><p class="text-[#8b949e] text-sm">Periode Sewa:</p><p class="text-[#c9d1d9] font-medium">${formattedDate}${rentalDuration}</p></div>
+          <div class="md:col-span-2"><p class="text-[#8b949e] text-sm">Keperluan:</p><p class="text-[#c9d1d9] font-medium">${rental.keperluan || '-'}</p></div>
           <div><p class="text-[#8b949e] text-sm">Total Harga:</p><p class="text-[#3fb950] font-bold">Rp ${parseInt(rental.price_total || 0).toLocaleString('id-ID')}</p></div>
         </div>
         <div class="mb-3">
