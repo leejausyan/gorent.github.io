@@ -129,9 +129,9 @@ function createRentalCard(rental) {
     // Verify button
     const verifyBtn = document.createElement('button');
     verifyBtn.className = 'btn-verify bg-[#3fb950]/20 border border-[#3fb950]/50 text-[#3fb950] font-medium py-2 px-4 rounded-lg hover:bg-[#3fb950]/30 transition-all duration-200 text-sm';
-    verifyBtn.textContent = '✓ Verifikasi';
+    verifyBtn.textContent = 'Verifikasi';
     verifyBtn.onclick = async () => {
-      console.log('✅ Verify button clicked! ID:', rental.id);
+      console.log('Verify button clicked! ID:', rental.id);
       await handleVerify(rental.id);
     };
     actionsDiv.appendChild(verifyBtn);
@@ -139,9 +139,9 @@ function createRentalCard(rental) {
     // Reject button
     const rejectBtn = document.createElement('button');
     rejectBtn.className = 'btn-reject bg-red-900/20 border border-red-700/50 text-red-400 font-medium py-2 px-4 rounded-lg hover:bg-red-900/30 transition-all duration-200 text-sm';
-    rejectBtn.textContent = '✗ Tolak';
+    rejectBtn.textContent = 'Tolak';
     rejectBtn.onclick = async () => {
-      console.log('❌ Reject button clicked! ID:', rental.id);
+      console.log('Reject button clicked! ID:', rental.id);
       await handleReject(rental.id);
     };
     actionsDiv.appendChild(rejectBtn);
@@ -150,9 +150,9 @@ function createRentalCard(rental) {
   // Delete button (always present)
   const deleteBtn = document.createElement('button');
   deleteBtn.className = 'btn-delete bg-red-900/30 border border-red-700/50 text-red-400 font-medium py-2 px-4 rounded-lg hover:bg-red-900/50 transition-all duration-200 text-sm';
-  deleteBtn.textContent = '🗑️ Hapus';
+  deleteBtn.textContent = 'Hapus';
   deleteBtn.onclick = async () => {
-    console.log('🗑️ Delete button clicked! ID:', rental.id);
+    console.log('Delete button clicked! ID:', rental.id);
     await handleDelete(rental.id);
   };
   actionsDiv.appendChild(deleteBtn);
@@ -195,7 +195,7 @@ function attachButtonListeners() {
 
 // Handle Verify - UPDATE STATUS TO "VERIFIED"
 async function handleVerify(id) {
-  console.log('📝 Verify process for ID:', id);
+  console.log('Verify process for ID:', id);
   if (!window.supabaseClient) {
     alert('Error: Database belum dikonfigurasi!');
     return;
@@ -203,7 +203,7 @@ async function handleVerify(id) {
   if (!confirm('Verifikasi peminjaman ini?')) return;
 
   try {
-    console.log('�� Updating status to VERIFIED for ID:', id);
+    console.log('Updating status to VERIFIED for ID:', id);
     const { data, error } = await window.supabaseClient
       .from('rentals')
       .update({ status: 'VERIFIED' })
@@ -211,18 +211,18 @@ async function handleVerify(id) {
       .select();
 
     if (error) throw error;
-    console.log('✅ Success:', data);
+    console.log('Success:', data);
     alert('Status berhasil diverifikasi!');
     loadRentals();
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error:', error);
     alert('Gagal update status: ' + error.message);
   }
 }
 
 // Handle Reject - UPDATE STATUS TO "DITOLAK"
 async function handleReject(id) {
-  console.log('📝 Reject process for ID:', id);
+  console.log('Reject process for ID:', id);
   if (!window.supabaseClient) {
     alert('Error: Database belum dikonfigurasi!');
     return;
@@ -230,7 +230,7 @@ async function handleReject(id) {
   if (!confirm('Tolak peminjaman ini?')) return;
 
   try {
-    console.log('📡 Updating status to DITOLAK for ID:', id);
+    console.log('Updating status to DITOLAK for ID:', id);
     const { data, error } = await window.supabaseClient
       .from('rentals')
       .update({ status: 'DITOLAK' })
@@ -238,18 +238,18 @@ async function handleReject(id) {
       .select();
 
     if (error) throw error;
-    console.log('✅ Success:', data);
+    console.log('Success:', data);
     alert('Status berhasil ditolak!');
     loadRentals();
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error:', error);
     alert('Gagal update status: ' + error.message);
   }
 }
 
 // Handle Delete - DELETE FROM DATABASE
 async function handleDelete(id) {
-  console.log('📝 Delete process for ID:', id);
+  console.log('Delete process for ID:', id);
   if (!window.supabaseClient) {
     alert('Error: Database belum dikonfigurasi!');
     return;
@@ -257,21 +257,21 @@ async function handleDelete(id) {
   if (!confirm('Hapus data peminjaman ini? Tindakan ini tidak dapat dibatalkan!')) return;
 
   try {
-    console.log('📡 Deleting rental ID:', id);
+    console.log('Deleting rental ID:', id);
     const { error } = await window.supabaseClient
       .from('rentals')
       .delete()
       .eq('id', id);
 
     if (error) throw error;
-    console.log('✅ Deleted successfully');
+    console.log('Deleted successfully');
     alert('Data berhasil dihapus!');
     loadRentals();
   } catch (error) {
-    console.error('❌ Error:', error);
+    console.error('Error:', error);
     alert('Gagal menghapus data: ' + error.message);
   }
 }
 
-console.log('🚀 Admin.js loaded');
+console.log('Admin.js loaded');
 loadRentals();
