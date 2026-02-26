@@ -20,14 +20,6 @@ document.getElementById('logoutButton').addEventListener('click', () => {
   }
 });
 
-// Load rentals on page load
-loadRentals();
-
-// Make functions globally available
-window.loadRentals = loadRentals;
-window.updateStatus = updateStatus;
-window.deleteRental = deleteRental;
-
 // Load rentals function
 async function loadRentals() {
   if (!window.supabaseClient) {
@@ -275,3 +267,11 @@ async function deleteRental(id) {
     alert('Gagal menghapus data: ' + error.message);
   }
 }
+
+// Make functions globally available
+window.loadRentals = loadRentals;
+window.updateStatus = updateStatus;
+window.deleteRental = deleteRental;
+
+// Load rentals on page load
+loadRentals();
