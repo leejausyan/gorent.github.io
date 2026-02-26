@@ -232,6 +232,30 @@
           <p class="text-xs text-[#6e7681] mt-1">Pilih tanggal pengembalian alat</p>
         </div>
 
+        <!-- QR Code Pembayaran -->
+        <div class="group">
+          <div class="bg-[#1c2128] border border-[#30363d] rounded-lg p-6">
+            <div class="flex items-center justify-center mb-3">
+              <svg class="w-5 h-5 text-[#58a6ff] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <h3 class="text-[#c9d1d9] font-bold text-lg">Metode Pembayaran</h3>
+            </div>
+            <p class="text-center text-[#8b949e] text-sm mb-4">Scan QR Code di bawah ini untuk melakukan pembayaran</p>
+            <div class="flex justify-center">
+              <div class="bg-white p-4 rounded-lg shadow-xl">
+                <img 
+                  src="images/qris.jpeg" 
+                  alt="QR Code Pembayaran" 
+                  class="w-64 h-64 object-contain"
+                  onerror="this.parentElement.innerHTML='<p class=&quot;text-red-500 text-sm p-4&quot;>Gambar QR Code tidak ditemukan</p>'"
+                />
+              </div>
+            </div>
+            <p class="text-center text-[#6e7681] text-xs mt-4">Setelah melakukan pembayaran, upload bukti transfer di bawah</p>
+          </div>
+        </div>
+
         <!-- File Upload Bukti Transfer -->
         <div class="group">
           <label class="block text-sm font-semibold text-[#c9d1d9] mb-2">Bukti Transfer</label>
