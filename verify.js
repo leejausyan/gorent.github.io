@@ -181,6 +181,63 @@ function displayRentalData(data) {
   } else {
     console.log('⚠️ No identitas URL found');
   }
+
+  // Setup copy ID button
+  setupCopyIdButton(data.id);
+}
+
+// Setup Copy ID Button
+function setupCopyIdButton(id) {
+  const copyBtn = document.getElementById('copyIdBtn');
+  const copyBtnText = document.getElementById('copyBtnText');
+  
+  if (!copyBtn) return;
+
+  copyBtn.addEventListener('click', async function() {
+    try {
+      // Copy to clipboard
+      await navigator.clipboard.writeText(id);
+      
+      // Change button text temporarily
+      const originalText = copyBtnText.textContent;
+      copyBtnText.textContent = '✓ Copied!';
+      copyBtn.classList.add('text-[#3fb950]', 'border-[#3fb950]');
+      
+      // Reset after 2 seconds
+      setTimeout(() => {
+        copyBtnText.textContent = originalText;
+        copyBtn.classList.remove('text-[#3fb950]', 'border-[#3fb950]');
+      }, 2000);
+      
+      console.log('✅ ID copied to clipboard:', id);
+    } catch (err) {
+      console.error('❌ Failed to copy:', err);
+      
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = id;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        copyBtnText.textContent = '✓ Copied!';
+        copyBtn.classList.add('text-[#3fb950]', 'border-[#3fb950]');
+        
+        setTimeout(() => {
+          copyBtnText.textContent = 'Copy';
+          copyBtn.classList.remove('text-[#3fb950]', 'border-[#3fb950]');
+        }, 2000);
+      } catch (err2) {
+        alert('Gagal copy ID. Silakan copy manual: ' + id);
+      }
+      
+      document.body.removeChild(textArea);
+    }
+  });
 }
 
 // Data akan otomatis di-fetch saat page load (lihat di atas)
+

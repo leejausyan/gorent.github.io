@@ -12,10 +12,33 @@ const totalDaysElement = document.getElementById("totalDays");
 const selectedItemsElement = document.getElementById("selectedItems");
 const tanggalSewaInput = document.getElementById("tanggal_sewa");
 const tanggalKembaliInput = document.getElementById("tanggal_kembali");
+const searchOrderBtn = document.getElementById("searchOrderBtn");
+const searchOrderId = document.getElementById("searchOrderId");
 
 // Check if Supabase is configured - log only, don't alert yet
 if (!window.supabaseClient) {
   console.warn('⚠️ Supabase client not initialized yet. Will check again on form submit.');
+}
+
+// Search Order by ID
+if (searchOrderBtn && searchOrderId) {
+  searchOrderBtn.addEventListener('click', function() {
+    const orderId = searchOrderId.value.trim();
+    if (!orderId) {
+      alert('Masukkan ID pesanan terlebih dahulu!');
+      return;
+    }
+    // Redirect to verify page with the order ID
+    window.location.href = `verify.html?id=${orderId}`;
+  });
+
+  // Allow Enter key to search
+  searchOrderId.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      searchOrderBtn.click();
+    }
+  });
 }
 
 // Calculate number of days between two dates

@@ -19,6 +19,32 @@
       <p class="text-center text-[#8b949e] text-sm">JMMI Go-Rent Web Rental Service V 1.0 </p>
     </div>
 
+    <!-- Check Order Section -->
+    <div class="bg-[#1c2128] border border-t-0 border-b-0 border-[#30363d] p-6">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-[#c9d1d9] font-semibold text-sm">Cek Status Pesanan</h2>
+        <svg class="w-5 h-5 text-[#58a6ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </div>
+      <div class="flex gap-2">
+        <input 
+          type="text" 
+          id="searchOrderId" 
+          placeholder="Masukkan ID Pesanan (contoh: 1a2b3c4d)" 
+          class="flex-1 px-4 py-2 bg-[#0d1117] border border-[#30363d] rounded-lg text-[#c9d1d9] placeholder-[#6e7681] text-sm focus:outline-none focus:border-[#1f6feb] focus:ring-2 focus:ring-[#1f6feb]/20 transition-all duration-200"
+        />
+        <button 
+          type="button" 
+          id="searchOrderBtn" 
+          class="bg-[#1f6feb] hover:bg-[#388bfd] text-white font-semibold px-6 py-2 rounded-lg transition-all duration-200 text-sm shadow-lg hover:shadow-xl"
+        >
+          Cek
+        </button>
+      </div>
+      <p class="text-xs text-[#6e7681] mt-2">Masukkan ID pesanan untuk mengecek status peminjaman Anda</p>
+    </div>
+
     <!-- Form Card -->
     <div class="bg-[#0d1117] border border-t-0 border-[#30363d] rounded-b-2xl p-8 shadow-2xl">
       <form id="rentalForm" class="space-y-5">
