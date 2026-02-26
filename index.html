@@ -140,8 +140,17 @@
 
           <!-- Total Price Display -->
           <div id="priceDisplay" class="mt-4 p-4 bg-[#1c2128] border border-[#30363d] rounded-lg hidden">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-[#8b949e] text-sm">Harga per Hari:</span>
+              <span id="pricePerDay" class="text-[#c9d1d9] font-semibold">Rp 0</span>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-[#8b949e] text-sm">Jumlah Hari:</span>
+              <span id="totalDays" class="text-[#c9d1d9] font-semibold">0 hari</span>
+            </div>
+            <div class="border-t border-[#30363d] my-2"></div>
             <div class="flex justify-between items-center">
-              <span class="text-[#c9d1d9] font-semibold">Total Harga:</span>
+              <span class="text-[#c9d1d9] font-bold">Total Harga:</span>
               <span id="totalPrice" class="text-[#3fb950] text-xl font-bold">Rp 0</span>
             </div>
             <div id="selectedItems" class="mt-2 text-xs text-[#8b949e]"></div>
@@ -157,6 +166,18 @@
             required 
             class="w-full px-4 py-3 bg-[#161b22] border border-[#30363d] rounded-lg text-[#c9d1d9] focus:outline-none focus:border-[#1f6feb] focus:ring-2 focus:ring-[#1f6feb]/20 transition-all duration-200"
           />
+        </div>
+
+        <!-- Tanggal Kembali -->
+        <div class="group">
+          <label class="block text-sm font-semibold text-[#c9d1d9] mb-2">Tanggal Kembali</label>
+          <input 
+            type="date" 
+            id="tanggal_kembali" 
+            required 
+            class="w-full px-4 py-3 bg-[#161b22] border border-[#30363d] rounded-lg text-[#c9d1d9] focus:outline-none focus:border-[#1f6feb] focus:ring-2 focus:ring-[#1f6feb]/20 transition-all duration-200"
+          />
+          <p class="text-xs text-[#6e7681] mt-1">Pilih tanggal pengembalian alat</p>
         </div>
 
         <!-- File Upload -->

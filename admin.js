@@ -83,9 +83,23 @@ function createRentalCard(rental) {
   card.className = 'bg-[#1c2128] border border-[#30363d] rounded-xl p-6 hover:border-[#1f6feb] transition-all duration-200';
   
   let formattedDate = '-';
+  let rentalDuration = '';
   if (rental.tanggal_sewa) {
-    const date = new Date(rental.tanggal_sewa);
-    formattedDate = date.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+    const startDate = new Date(rental.tanggal_sewa);
+    formattedDate = startDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+    
+    // Add return date if exists
+    if (rental.tanggal_kembali) {
+      const endDate = new Date(rental.tanggal_kembali);
+      const formattedReturnDate = endDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+      
+      // Calculate days
+      const diffTime = endDate - startDate;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      formattedDate = `${formattedDate} - ${formattedReturnDate}`;
+      rentalDuration = ` (${diffDays} hari)`;
+    }
   }
 
   let createdDate = '-';
@@ -120,7 +134,7 @@ function createRentalCard(rental) {
     buktiLink.href = rental.bukti_transfer_url;
     buktiLink.target = '_blank';
     buktiLink.className = 'text-center bg-[#21262d] border border-[#30363d] text-[#58a6ff] font-medium py-2 px-4 rounded-lg hover:bg-[#30363d] hover:border-[#1f6feb] transition-all duration-200 text-sm';
-    buktiLink.textContent = '📷 Lihat Bukti';
+    buktiLink.textContent = 'Lihat Bukti';
     actionsDiv.appendChild(buktiLink);
   }
 
@@ -167,7 +181,7 @@ function createRentalCard(rental) {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
           <div><p class="text-[#8b949e] text-sm">No. HP:</p><p class="text-[#c9d1d9] font-medium">${rental.no_hp || '-'}</p></div>
           <div><p class="text-[#8b949e] text-sm">Alamat:</p><p class="text-[#c9d1d9] font-medium">${rental.alamat || '-'}</p></div>
-          <div><p class="text-[#8b949e] text-sm">Tanggal Sewa:</p><p class="text-[#c9d1d9] font-medium">${formattedDate}</p></div>
+          <div><p class="text-[#8b949e] text-sm">Periode Sewa:</p><p class="text-[#c9d1d9] font-medium">${formattedDate}${rentalDuration}</p></div>
           <div><p class="text-[#8b949e] text-sm">Total Harga:</p><p class="text-[#3fb950] font-bold">Rp ${parseInt(rental.price_total || 0).toLocaleString('id-ID')}</p></div>
         </div>
         <div class="mb-3">

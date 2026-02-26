@@ -105,7 +105,7 @@ function displayRentalData(data) {
   document.getElementById('noHp').textContent = data.no_hp || '-';
   document.getElementById('alamat').textContent = data.alamat || '-';
   
-  // Format date
+  // Format rental date
   if (data.tanggal_sewa) {
     const date = new Date(data.tanggal_sewa);
     const formattedDate = date.toLocaleDateString('id-ID', { 
@@ -114,6 +114,24 @@ function displayRentalData(data) {
       day: 'numeric' 
     });
     document.getElementById('tanggalSewa').textContent = formattedDate;
+  }
+  
+  // Format return date and calculate days
+  if (data.tanggal_kembali) {
+    const returnDate = new Date(data.tanggal_kembali);
+    const formattedReturnDate = returnDate.toLocaleDateString('id-ID', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    // Calculate number of days
+    if (data.tanggal_sewa) {
+      const startDate = new Date(data.tanggal_sewa);
+      const diffTime = returnDate - startDate;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      document.getElementById('tanggalSewa').textContent = `${document.getElementById('tanggalSewa').textContent} - ${formattedReturnDate} (${diffDays} hari)`;
+    }
   }
 
   // Display items

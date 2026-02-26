@@ -5,11 +5,68 @@ const fileNameDisplay = document.getElementById("fileName");
 const checkboxes = document.querySelectorAll(".item-checkbox");
 const priceDisplay = document.getElementById("priceDisplay");
 const totalPriceElement = document.getElementById("totalPrice");
+const pricePerDayElement = document.getElementById("pricePerDay");
+const totalDaysElement = document.getElementById("totalDays");
 const selectedItemsElement = document.getElementById("selectedItems");
+const tanggalSewaInput = document.getElementById("tanggal_sewa");
+const tanggalKembaliInput = document.getElementById("tanggal_kembali");
 
 // Check if Supabase is configured - log only, don't alert yet
 if (!window.supabaseClient) {
   console.warn('⚠️ Supabase client not initialized yet. Will check again on form submit.');
+}
+
+// Calculate number of days between two dates
+function calculateDays() {
+  const tanggalSewa = tanggalSewaInput.value;
+  const tanggalKembali = tanggalKembaliInput.value;
+  
+  if (!tanggalSewa || !tanggalKembali) {
+    return 1; // Default 1 day if dates not selected
+  }
+  
+  const startDate = new Date(tanggalSewa);
+  const endDate = new Date(tanggalKembali);
+  
+  // Calculate difference in days
+  const diffTime = endDate - startDate;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Minimum 1 day
+  return diffDays > 0 ? diffDays : 1;
+}
+
+// Update price display
+function updatePriceDisplay() {
+  const selectedCheckboxes = document.querySelectorAll(".item-checkbox:checked");
+  
+  // Calculate base price (per day)
+  let pricePerDay = 0;
+  const selectedItems = [];
+  
+  selectedCheckboxes.forEach((cb) => {
+    pricePerDay += parseInt(cb.dataset.price);
+    selectedItems.push(cb.value);
+  });
+  
+  // Calculate total days
+  const totalDays = calculateDays();
+  
+  // Calculate total price (price per day * number of days)
+  const totalPrice = pricePerDay * totalDays;
+  
+  // Update display
+  if (selectedCheckboxes.length > 0) {
+    priceDisplay.classList.remove("hidden");
+    pricePerDayElement.textContent = `Rp ${pricePerDay.toLocaleString("id-ID")}`;
+    totalDaysElement.textContent = `${totalDays} hari`;
+    totalPriceElement.textContent = `Rp ${totalPrice.toLocaleString("id-ID")}`;
+    selectedItemsElement.textContent = `Dipilih: ${selectedItems.join(", ")}`;
+  } else {
+    priceDisplay.classList.add("hidden");
+  }
+  
+  return { pricePerDay, totalDays, totalPrice };
 }
 
 // File upload feedback
@@ -23,7 +80,7 @@ fileInput.addEventListener("change", (e) => {
   }
 });
 
-// Handle item selection and price calculation
+// Handle item selection
 checkboxes.forEach((checkbox) => {
   checkbox.addEventListener("change", () => {
     const selectedCheckboxes = document.querySelectorAll(".item-checkbox:checked");
@@ -34,25 +91,26 @@ checkboxes.forEach((checkbox) => {
       alert("Maksimal 4 alat yang dapat dipilih!");
       return;
     }
-
-    // Calculate total price
-    let totalPrice = 0;
-    const selectedItems = [];
     
-    selectedCheckboxes.forEach((cb) => {
-      totalPrice += parseInt(cb.dataset.price);
-      selectedItems.push(cb.value);
-    });
-
-    // Update display
-    if (selectedCheckboxes.length > 0) {
-      priceDisplay.classList.remove("hidden");
-      totalPriceElement.textContent = `Rp ${totalPrice.toLocaleString("id-ID")}`;
-      selectedItemsElement.textContent = `Dipilih: ${selectedItems.join(", ")}`;
-    } else {
-      priceDisplay.classList.add("hidden");
-    }
+    updatePriceDisplay();
   });
+});
+
+// Handle date changes
+tanggalSewaInput.addEventListener("change", () => {
+  // Set minimum return date to rental date
+  tanggalKembaliInput.min = tanggalSewaInput.value;
+  
+  // If return date is before rental date, reset it
+  if (tanggalKembaliInput.value && tanggalKembaliInput.value < tanggalSewaInput.value) {
+    tanggalKembaliInput.value = "";
+  }
+  
+  updatePriceDisplay();
+});
+
+tanggalKembaliInput.addEventListener("change", () => {
+  updatePriceDisplay();
 });
 
 form.addEventListener("submit", async (e) => {
@@ -67,6 +125,20 @@ form.addEventListener("submit", async (e) => {
   const selectedCheckboxes = document.querySelectorAll(".item-checkbox:checked");
   if (selectedCheckboxes.length === 0) {
     alert("Pilih minimal 1 alat untuk dipinjam!");
+    return;
+  }
+
+  // Validate dates
+  const tanggalSewa = tanggalSewaInput.value;
+  const tanggalKembali = tanggalKembaliInput.value;
+  
+  if (!tanggalSewa || !tanggalKembali) {
+    alert("Tanggal sewa dan tanggal kembali harus diisi!");
+    return;
+  }
+  
+  if (new Date(tanggalKembali) < new Date(tanggalSewa)) {
+    alert("Tanggal kembali tidak boleh lebih awal dari tanggal sewa!");
     return;
   }
 
@@ -91,10 +163,20 @@ form.addEventListener("submit", async (e) => {
       item_4: ""
     };
 
-    let totalPrice = 0;
+    let pricePerDay = 0;
     selectedCheckboxes.forEach((cb, index) => {
       itemsData[`item_${index + 1}`] = cb.value;
-      totalPrice += parseInt(cb.dataset.price);
+      pricePerDay += parseInt(cb.dataset.price);
+    });
+    
+    // Calculate total days and total price
+    const totalDays = calculateDays();
+    const totalPrice = pricePerDay * totalDays;
+
+    console.log('📊 Price calculation:', {
+      pricePerDay,
+      totalDays,
+      totalPrice
     });
 
     // Upload file ke Supabase Storage
@@ -122,10 +204,13 @@ form.addEventListener("submit", async (e) => {
       alamat: document.getElementById("alamat").value,
       ...itemsData,
       price_total: totalPrice,
-      tanggal_sewa: document.getElementById("tanggal_sewa").value,
+      tanggal_sewa: tanggalSewa,
+      tanggal_kembali: tanggalKembali,
       bukti_transfer_url: publicUrl,
       status: "MENUNGGU_VERIFIKASI"
     };
+    
+    console.log('📤 Sending rental data:', rentalData);
 
     const { data, error } = await window.supabaseClient
       .from('rentals')
