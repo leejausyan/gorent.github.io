@@ -110,6 +110,53 @@ function createRentalCard(rental) {
   const items = [rental.item_1, rental.item_2, rental.item_3, rental.item_4].filter(item => item && item.trim() !== '');
   const itemsHtml = items.map(item => `<span class="inline-flex items-center px-3 py-1 bg-[#161b22] border border-[#30363d] rounded-lg text-sm text-[#c9d1d9]">${item}</span>`).join(' ');
 
+  // Create action buttons container
+  const actionsDiv = document.createElement('div');
+  actionsDiv.className = 'flex flex-col gap-2 lg:w-48';
+
+  // Add bukti transfer link if exists
+  if (rental.bukti_transfer_url) {
+    const buktiLink = document.createElement('a');
+    buktiLink.href = rental.bukti_transfer_url;
+    buktiLink.target = '_blank';
+    buktiLink.className = 'text-center bg-[#21262d] border border-[#30363d] text-[#58a6ff] font-medium py-2 px-4 rounded-lg hover:bg-[#30363d] hover:border-[#1f6feb] transition-all duration-200 text-sm';
+    buktiLink.textContent = '📷 Lihat Bukti';
+    actionsDiv.appendChild(buktiLink);
+  }
+
+  // Add verify and reject buttons if pending
+  if (rental.status === 'MENUNGGU_VERIFIKASI') {
+    // Verify button
+    const verifyBtn = document.createElement('button');
+    verifyBtn.className = 'btn-verify bg-[#3fb950]/20 border border-[#3fb950]/50 text-[#3fb950] font-medium py-2 px-4 rounded-lg hover:bg-[#3fb950]/30 transition-all duration-200 text-sm';
+    verifyBtn.textContent = '✓ Verifikasi';
+    verifyBtn.onclick = async () => {
+      console.log('✅ Verify button clicked! ID:', rental.id);
+      await handleVerify(rental.id);
+    };
+    actionsDiv.appendChild(verifyBtn);
+
+    // Reject button
+    const rejectBtn = document.createElement('button');
+    rejectBtn.className = 'btn-reject bg-red-900/20 border border-red-700/50 text-red-400 font-medium py-2 px-4 rounded-lg hover:bg-red-900/30 transition-all duration-200 text-sm';
+    rejectBtn.textContent = '✗ Tolak';
+    rejectBtn.onclick = async () => {
+      console.log('❌ Reject button clicked! ID:', rental.id);
+      await handleReject(rental.id);
+    };
+    actionsDiv.appendChild(rejectBtn);
+  }
+
+  // Delete button (always present)
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'btn-delete bg-red-900/30 border border-red-700/50 text-red-400 font-medium py-2 px-4 rounded-lg hover:bg-red-900/50 transition-all duration-200 text-sm';
+  deleteBtn.textContent = '🗑️ Hapus';
+  deleteBtn.onclick = async () => {
+    console.log('🗑️ Delete button clicked! ID:', rental.id);
+    await handleDelete(rental.id);
+  };
+  actionsDiv.appendChild(deleteBtn);
+
   card.innerHTML = `
     <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
       <div class="flex-1">
@@ -129,55 +176,21 @@ function createRentalCard(rental) {
         </div>
         <div><p class="text-[#6e7681] text-xs">Dibuat: ${createdDate}</p></div>
       </div>
-      <div class="flex flex-col gap-2 lg:w-48">
-        ${rental.bukti_transfer_url ? `<a href="${rental.bukti_transfer_url}" target="_blank" class="text-center bg-[#21262d] border border-[#30363d] text-[#58a6ff] font-medium py-2 px-4 rounded-lg hover:bg-[#30363d] hover:border-[#1f6feb] transition-all duration-200 text-sm">📷 Lihat Bukti</a>` : ''}
-        ${rental.status === 'MENUNGGU_VERIFIKASI' ? `
-          <button class="btn-verify bg-[#3fb950]/20 border border-[#3fb950]/50 text-[#3fb950] font-medium py-2 px-4 rounded-lg hover:bg-[#3fb950]/30 transition-all duration-200 text-sm" data-id="${rental.id}">✓ Verifikasi</button>
-          <button class="btn-reject bg-red-900/20 border border-red-700/50 text-red-400 font-medium py-2 px-4 rounded-lg hover:bg-red-900/30 transition-all duration-200 text-sm" data-id="${rental.id}">✗ Tolak</button>
-        ` : ''}
-        <button class="btn-delete bg-red-900/30 border border-red-700/50 text-red-400 font-medium py-2 px-4 rounded-lg hover:bg-red-900/50 transition-all duration-200 text-sm" data-id="${rental.id}">🗑️ Hapus</button>
-      </div>
+      <div id="actions-placeholder"></div>
     </div>
   `;
+
+  // Append actions div to placeholder
+  const placeholder = card.querySelector('#actions-placeholder');
+  placeholder.replaceWith(actionsDiv);
+  
   return card;
 }
 
-// Attach button listeners
+// Attach button listeners - NOT NEEDED ANYMORE
 function attachButtonListeners() {
-  console.log('🔧 Attaching button listeners...');
-  
-  document.querySelectorAll('.btn-verify').forEach(btn => {
-    btn.addEventListener('click', async function(e) {
-      e.preventDefault();
-      const dataId = this.getAttribute('data-id');
-      console.log('✅ Raw data-id:', dataId);
-      const id = dataId; // Keep as string, might be UUID
-      console.log('✅ Verify clicked for ID:', id);
-      await handleVerify(id);
-    });
-  });
-  
-  document.querySelectorAll('.btn-reject').forEach(btn => {
-    btn.addEventListener('click', async function(e) {
-      e.preventDefault();
-      const dataId = this.getAttribute('data-id');
-      console.log('❌ Raw data-id:', dataId);
-      const id = dataId; // Keep as string, might be UUID
-      console.log('❌ Reject clicked for ID:', id);
-      await handleReject(id);
-    });
-  });
-  
-  document.querySelectorAll('.btn-delete').forEach(btn => {
-    btn.addEventListener('click', async function(e) {
-      e.preventDefault();
-      const dataId = this.getAttribute('data-id');
-      console.log('🗑️ Raw data-id:', dataId);
-      const id = dataId; // Keep as string, might be UUID
-      console.log('🗑️ Delete clicked for ID:', id);
-      await handleDelete(id);
-    });
-  });
+  // Buttons now use onclick directly, no need for manual attachment
+  console.log('🔧 Buttons attached via onclick handlers');
 }
 
 // Handle Verify - UPDATE STATUS TO "VERIFIED"
