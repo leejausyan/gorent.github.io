@@ -168,6 +168,17 @@ function displayRentalData(data) {
   } else {
     document.getElementById('buktiImage').parentElement.innerHTML = '<p class="text-[#8b949e] text-center py-4">Bukti transfer tidak tersedia</p>';
   }
+
+  // Display identitas if exists
+  if (data.identitas_url) {
+    const identitasSection = document.getElementById('identitasSection');
+    identitasSection.classList.remove('hidden');
+    document.getElementById('identitasImage').src = data.identitas_url;
+    document.getElementById('identitasLink').href = data.identitas_url;
+    console.log('✅ Identitas displayed:', data.identitas_url);
+  } else {
+    console.log('⚠️ No identitas URL found');
+  }
 }
 
 // Data akan otomatis di-fetch saat page load (lihat di atas)

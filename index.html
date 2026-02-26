@@ -180,7 +180,7 @@
           <p class="text-xs text-[#6e7681] mt-1">Pilih tanggal pengembalian alat</p>
         </div>
 
-        <!-- File Upload -->
+        <!-- File Upload Bukti Transfer -->
         <div class="group">
           <label class="block text-sm font-semibold text-[#c9d1d9] mb-2">Bukti Transfer</label>
           <div class="relative">
@@ -204,6 +204,33 @@
               </div>
             </label>
             <span id="fileName" class="block text-sm text-[#58a6ff] mt-2 hidden"></span>
+          </div>
+        </div>
+
+        <!-- File Upload Identitas -->
+        <div class="group">
+          <label class="block text-sm font-semibold text-[#c9d1d9] mb-2">Identitas (KTP/SIM/KTM)</label>
+          <div class="relative">
+            <input 
+              type="file" 
+              id="identitas" 
+              accept="image/*" 
+              required 
+              class="hidden"
+            />
+            <label 
+              for="identitas"
+              class="flex items-center justify-center w-full px-4 py-3 bg-[#161b22] border-2 border-dashed border-[#30363d] rounded-lg cursor-pointer hover:border-[#1f6feb] hover:bg-[#1c2128] transition-all duration-200 group/upload"
+            >
+              <div class="text-center">
+                <svg class="w-8 h-8 text-[#58a6ff] mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/>
+                </svg>
+                <p class="text-sm text-[#c9d1d9]">Upload KTP/SIM/KTM</p>
+                <p class="text-xs text-[#6e7681] mt-1">PNG, JPG, GIF (Max 5MB)</p>
+              </div>
+            </label>
+            <span id="identitasFileName" class="block text-sm text-[#58a6ff] mt-2 hidden"></span>
           </div>
         </div>
 

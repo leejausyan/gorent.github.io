@@ -2,6 +2,8 @@ const form = document.getElementById("rentalForm");
 const statusText = document.getElementById("status");
 const fileInput = document.getElementById("bukti");
 const fileNameDisplay = document.getElementById("fileName");
+const identitasInput = document.getElementById("identitas");
+const identitasFileNameDisplay = document.getElementById("identitasFileName");
 const checkboxes = document.querySelectorAll(".item-checkbox");
 const priceDisplay = document.getElementById("priceDisplay");
 const totalPriceElement = document.getElementById("totalPrice");
@@ -69,7 +71,7 @@ function updatePriceDisplay() {
   return { pricePerDay, totalDays, totalPrice };
 }
 
-// File upload feedback
+// File upload feedback for bukti transfer
 fileInput.addEventListener("change", (e) => {
   if (e.target.files[0]) {
     fileNameDisplay.textContent = "✓ " + e.target.files[0].name;
@@ -77,6 +79,17 @@ fileInput.addEventListener("change", (e) => {
     fileNameDisplay.classList.add("text-[#58a6ff]");
   } else {
     fileNameDisplay.classList.add("hidden");
+  }
+});
+
+// File upload feedback for identitas
+identitasInput.addEventListener("change", (e) => {
+  if (e.target.files[0]) {
+    identitasFileNameDisplay.textContent = "✓ " + e.target.files[0].name;
+    identitasFileNameDisplay.classList.remove("hidden");
+    identitasFileNameDisplay.classList.add("text-[#58a6ff]");
+  } else {
+    identitasFileNameDisplay.classList.add("hidden");
   }
 });
 
@@ -229,9 +242,15 @@ form.addEventListener("submit", async (e) => {
   }
 
   const file = fileInput.files[0];
+  const identitasFile = identitasInput.files[0];
   
   if (!file) {
     alert("Upload bukti transfer terlebih dahulu!");
+    return;
+  }
+
+  if (!identitasFile) {
+    alert("Upload identitas (KTP/SIM/KTM) terlebih dahulu!");
     return;
   }
 
@@ -302,7 +321,8 @@ form.addEventListener("submit", async (e) => {
       totalPrice
     });
 
-    // Upload file ke Supabase Storage
+    // Upload bukti transfer ke Supabase Storage
+    statusText.innerText = "Mengupload bukti transfer...";
     const fileName = `bukti-${Date.now()}-${file.name}`;
     const { data: uploadData, error: uploadError } = await window.supabaseClient.storage
       .from('bukti-transfer')
@@ -315,12 +335,37 @@ form.addEventListener("submit", async (e) => {
       throw new Error('Gagal upload bukti transfer: ' + uploadError.message);
     }
 
-    // Get public URL
+    // Get public URL for bukti transfer
     const { data: { publicUrl } } = window.supabaseClient.storage
       .from('bukti-transfer')
       .getPublicUrl(fileName);
 
+    // Upload identitas ke Supabase Storage
+    statusText.innerText = "Mengupload identitas...";
+    const identitasFileName = `identitas-${Date.now()}-${identitasFile.name}`;
+    const { data: identitasUploadData, error: identitasUploadError } = await window.supabaseClient.storage
+      .from('identitas')
+      .upload(identitasFileName, identitasFile, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (identitasUploadError) {
+      throw new Error('Gagal upload identitas: ' + identitasUploadError.message);
+    }
+
+    // Get public URL for identitas
+    const { data: { publicUrl: identitasPublicUrl } } = window.supabaseClient.storage
+      .from('identitas')
+      .getPublicUrl(identitasFileName);
+
+    console.log('✅ Files uploaded:', {
+      buktiTransfer: publicUrl,
+      identitas: identitasPublicUrl
+    });
+
     // Insert data ke database
+    statusText.innerText = "Menyimpan data...";
     const rentalData = {
       nama: document.getElementById("nama").value,
       no_hp: document.getElementById("no_hp").value,
@@ -330,6 +375,7 @@ form.addEventListener("submit", async (e) => {
       tanggal_sewa: tanggalSewa,
       tanggal_kembali: tanggalKembali,
       bukti_transfer_url: publicUrl,
+      identitas_url: identitasPublicUrl,
       status: "MENUNGGU_VERIFIKASI"
     };
     

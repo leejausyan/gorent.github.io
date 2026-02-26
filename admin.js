@@ -134,8 +134,18 @@ function createRentalCard(rental) {
     buktiLink.href = rental.bukti_transfer_url;
     buktiLink.target = '_blank';
     buktiLink.className = 'text-center bg-[#21262d] border border-[#30363d] text-[#58a6ff] font-medium py-2 px-4 rounded-lg hover:bg-[#30363d] hover:border-[#1f6feb] transition-all duration-200 text-sm';
-    buktiLink.textContent = 'Lihat Bukti';
+    buktiLink.textContent = '📷 Lihat Bukti';
     actionsDiv.appendChild(buktiLink);
+  }
+
+  // Add identitas link if exists
+  if (rental.identitas_url) {
+    const identitasLink = document.createElement('a');
+    identitasLink.href = rental.identitas_url;
+    identitasLink.target = '_blank';
+    identitasLink.className = 'text-center bg-[#21262d] border border-[#30363d] text-[#58a6ff] font-medium py-2 px-4 rounded-lg hover:bg-[#30363d] hover:border-[#1f6feb] transition-all duration-200 text-sm';
+    identitasLink.textContent = '🪪 Lihat Identitas';
+    actionsDiv.appendChild(identitasLink);
   }
 
   // Add verify and reject buttons if pending
