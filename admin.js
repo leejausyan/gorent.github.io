@@ -185,18 +185,18 @@ function createRentalCard(rental) {
         ` : ''}
         
         ${rental.status === 'MENUNGGU_VERIFIKASI' ? `
-          <button onclick="updateStatus(${rental.id}, 'VERIFIED')"
-                  class="bg-[#3fb950]/20 border border-[#3fb950]/50 text-[#3fb950] font-medium py-2 px-4 rounded-lg hover:bg-[#3fb950]/30 transition-all duration-200 text-sm">
+          <button data-action="verify" data-id="${rental.id}"
+                  class="btn-verify bg-[#3fb950]/20 border border-[#3fb950]/50 text-[#3fb950] font-medium py-2 px-4 rounded-lg hover:bg-[#3fb950]/30 transition-all duration-200 text-sm">
             ✓ Verifikasi
           </button>
-          <button onclick="updateStatus(${rental.id}, 'DITOLAK')"
-                  class="bg-red-900/20 border border-red-700/50 text-red-400 font-medium py-2 px-4 rounded-lg hover:bg-red-900/30 transition-all duration-200 text-sm">
+          <button data-action="reject" data-id="${rental.id}"
+                  class="btn-reject bg-red-900/20 border border-red-700/50 text-red-400 font-medium py-2 px-4 rounded-lg hover:bg-red-900/30 transition-all duration-200 text-sm">
             ✗ Tolak
           </button>
         ` : ''}
         
-        <button onclick="deleteRental(${rental.id})"
-                class="bg-red-900/30 border border-red-700/50 text-red-400 font-medium py-2 px-4 rounded-lg hover:bg-red-900/50 transition-all duration-200 text-sm">
+        <button data-action="delete" data-id="${rental.id}"
+                class="btn-delete bg-red-900/30 border border-red-700/50 text-red-400 font-medium py-2 px-4 rounded-lg hover:bg-red-900/50 transition-all duration-200 text-sm">
           🗑️ Hapus
         </button>
       </div>
@@ -272,6 +272,26 @@ async function deleteRental(id) {
 window.loadRentals = loadRentals;
 window.updateStatus = updateStatus;
 window.deleteRental = deleteRental;
+
+// Event delegation for dynamically created buttons
+document.addEventListener('click', function(e) {
+  // Check if clicked element is a button with data-action
+  const button = e.target.closest('[data-action]');
+  if (!button) return;
+
+  const action = button.getAttribute('data-action');
+  const id = parseInt(button.getAttribute('data-id'));
+
+  console.log('Button clicked:', action, 'ID:', id);
+
+  if (action === 'verify') {
+    updateStatus(id, 'VERIFIED');
+  } else if (action === 'reject') {
+    updateStatus(id, 'DITOLAK');
+  } else if (action === 'delete') {
+    deleteRental(id);
+  }
+});
 
 // Load rentals on page load
 loadRentals();
