@@ -17,7 +17,7 @@ const searchOrderId = document.getElementById("searchOrderId");
 
 // Check if Supabase is configured - log only, don't alert yet
 if (!window.supabaseClient) {
-  console.warn('⚠️ Supabase client not initialized yet. Will check again on form submit.');
+  console.warn('Supabase client not initialized yet. Will check again on form submit.');
 }
 
 // Search Order by ID

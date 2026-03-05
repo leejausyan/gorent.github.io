@@ -2,20 +2,20 @@
 
 Website statis untuk sistem peminjaman alat menggunakan HTML, JavaScript, dan Supabase sebagai database.
 
-## 🚀 Fitur
+## Fitur
 
 - **Form Peminjaman**: User dapat mengisi form untuk meminjam alat (Camera, Projector, Handie Talkie, Laptop)
 - **Upload Bukti Transfer**: User upload bukti pembayaran
 - **Status Tracking**: User dapat melihat status peminjaman mereka
 - **Admin Panel**: Admin dapat melihat dan memverifikasi peminjaman
 
-## 🛠️ Teknologi
+## Teknologi
 
 - **Frontend**: HTML5, JavaScript (Vanilla), Tailwind CSS (CDN)
 - **Database**: Supabase
 - **Deployment**: GitHub Pages (Static Site)
 
-## 📦 Setup
+## Setup
 
 ### 1. Konfigurasi Supabase
 
@@ -71,7 +71,7 @@ const ADMIN_CREDENTIALS = {
 4. Simpan dan tunggu deployment selesai
 5. Website akan tersedia di: `https://username.github.io/repository-name/`
 
-## 📁 Struktur File
+## Struktur File
 
 ```
 gorent/
@@ -88,14 +88,14 @@ gorent/
 └── README.md           # Dokumentasi ini
 ```
 
-## 🔒 Keamanan
+## Keamanan
 
 - **Anon Key**: Aman digunakan di frontend (public)
 - **RLS (Row Level Security)**: Aktifkan di Supabase untuk keamanan data
 - **Admin Credentials**: Untuk demo only, gunakan Supabase Auth untuk production
 - **Environment Variables**: Untuk production, gunakan GitHub Secrets atau environment variables
 
-## 📝 Cara Penggunaan
+## Cara Penggunaan
 
 ### User:
 1. Buka website
@@ -111,17 +111,17 @@ gorent/
 4. Verifikasi/tolak peminjaman
 5. Lihat detail setiap peminjaman
 
-## 🌐 Dependencies (via CDN)
+## Dependencies (via CDN)
 
 - [Tailwind CSS](https://cdn.tailwindcss.com) - Styling
 - [Supabase JS v2](https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2) - Database client
 
 **Tidak ada instalasi Node.js atau npm yang diperlukan!**
 
-## 📄 License
+## License
 
 MIT License - Bebas digunakan untuk keperluan apapun.
 
-## 👨‍💻 Support
+## Support
 
 Untuk pertanyaan atau bantuan, silakan buka issue di GitHub repository ini.
