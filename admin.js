@@ -382,6 +382,30 @@ let revenueChart = null;
 
 // Initialize Charts
 function initCharts() {
+  // Check if Chart.js is loaded
+  if (typeof Chart === 'undefined') {
+    console.error('❌ Chart.js belum dimuat! Charts tidak dapat diinisialisasi.');
+    return false;
+  }
+
+  console.log('📊 Menginisialisasi charts...');
+
+  // Check canvas elements exist
+  const rentalCanvas = document.getElementById('rentalChart');
+  const statusCanvas = document.getElementById('statusChart');
+  const revenueCanvas = document.getElementById('revenueChart');
+  
+  if (!rentalCanvas || !statusCanvas || !revenueCanvas) {
+    console.error('❌ Canvas elements tidak ditemukan!', {
+      rentalChart: !!rentalCanvas,
+      statusChart: !!statusCanvas,
+      revenueChart: !!revenueCanvas
+    });
+    return false;
+  }
+
+  console.log('✅ Canvas elements ditemukan');
+
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -564,6 +588,14 @@ function initCharts() {
       }
     });
   }
+
+  console.log('✅ Charts berhasil diinisialisasi:', {
+    rentalChart: !!rentalChart,
+    statusChart: !!statusChart,
+    revenueChart: !!revenueChart
+  });
+
+  return true;
 }
 
 // Update Charts with Real Data
@@ -650,19 +682,53 @@ async function updateCharts() {
 }
 
 // Initialize charts when DOM is ready
+function waitForChartJS() {
+  return new Promise((resolve) => {
+    if (typeof Chart !== 'undefined') {
+      resolve();
+    } else {
+      const checkChart = setInterval(() => {
+        if (typeof Chart !== 'undefined') {
+          clearInterval(checkChart);
+          resolve();
+        }
+      }, 100);
+    }
+  });
+}
+
+// Initialize charts after Chart.js is loaded
+async function initializeChartsWhenReady() {
+  try {
+    await waitForChartJS();
+    console.log('✅ Chart.js loaded successfully');
+    console.log('📊 Chart version:', Chart.version);
+    
+    const success = initCharts();
+    if (success) {
+      console.log('📈 Updating charts dengan data...');
+      await updateCharts();
+    }
+  } catch (error) {
+    console.error('❌ Error saat inisialisasi charts:', error);
+  }
+}
+
+// Start initialization
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    initCharts();
-    updateCharts();
+    initializeChartsWhenReady();
   });
 } else {
-  initCharts();
-  updateCharts();
+  initializeChartsWhenReady();
 }
 
 // Update charts when rentals are loaded
 const originalLoadRentals = loadRentals;
 loadRentals = async function() {
   await originalLoadRentals();
-  updateCharts();
+  // Only update if charts are already initialized
+  if (rentalChart && statusChart && revenueChart) {
+    updateCharts();
+  }
 };
