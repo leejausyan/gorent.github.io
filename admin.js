@@ -371,3 +371,298 @@ async function handleDelete(id) {
 
 console.log('Admin.js loaded');
 loadRentals();
+
+// ========================================
+// CHART.JS INITIALIZATION
+// ========================================
+
+let rentalChart = null;
+let statusChart = null;
+let revenueChart = null;
+
+// Initialize Charts
+function initCharts() {
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: '#c9d1d9',
+          font: {
+            family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            size: 12
+          },
+          padding: 15
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(22, 27, 34, 0.95)',
+        titleColor: '#c9d1d9',
+        bodyColor: '#8b949e',
+        borderColor: '#30363d',
+        borderWidth: 1,
+        padding: 12,
+        cornerRadius: 8,
+        displayColors: true
+      }
+    }
+  };
+
+  // Chart 1: Peminjaman Per Bulan (Bar Chart)
+  const ctx1 = document.getElementById('rentalChart');
+  if (ctx1) {
+    rentalChart = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Jumlah Peminjaman',
+          data: [],
+          backgroundColor: 'rgba(31, 111, 235, 0.8)',
+          borderColor: 'rgba(88, 166, 255, 1)',
+          borderWidth: 2,
+          borderRadius: 8,
+          hoverBackgroundColor: 'rgba(88, 166, 255, 0.9)',
+        }]
+      },
+      options: {
+        ...chartOptions,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#8b949e',
+              font: { size: 11 },
+              stepSize: 1
+            },
+            grid: {
+              color: 'rgba(48, 54, 61, 0.5)',
+              drawBorder: false
+            }
+          },
+          x: {
+            ticks: {
+              color: '#8b949e',
+              font: { size: 11 }
+            },
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Chart 2: Status Distribution (Doughnut Chart)
+  const ctx2 = document.getElementById('statusChart');
+  if (ctx2) {
+    statusChart = new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: ['Menunggu', 'Terverifikasi', 'Ditolak'],
+        datasets: [{
+          data: [0, 0, 0],
+          backgroundColor: [
+            'rgba(240, 136, 62, 0.8)',  // Yellow for pending
+            'rgba(63, 185, 80, 0.8)',   // Green for verified
+            'rgba(218, 54, 51, 0.8)'    // Red for rejected
+          ],
+          borderColor: [
+            'rgba(240, 136, 62, 1)',
+            'rgba(63, 185, 80, 1)',
+            'rgba(218, 54, 51, 1)'
+          ],
+          borderWidth: 2,
+          hoverOffset: 15
+        }]
+      },
+      options: {
+        ...chartOptions,
+        cutout: '65%',
+        plugins: {
+          ...chartOptions.plugins,
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: '#c9d1d9',
+              font: { size: 12 },
+              padding: 15,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Chart 3: Revenue Trend (Line Chart)
+  const ctx3 = document.getElementById('revenueChart');
+  if (ctx3) {
+    revenueChart = new Chart(ctx3, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Pendapatan (Rp)',
+          data: [],
+          borderColor: 'rgba(63, 185, 80, 1)',
+          backgroundColor: 'rgba(63, 185, 80, 0.1)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: 'rgba(63, 185, 80, 1)',
+          pointBorderColor: '#161b22',
+          pointBorderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          pointHoverBackgroundColor: 'rgba(88, 166, 255, 1)',
+          pointHoverBorderColor: '#161b22',
+          pointHoverBorderWidth: 3
+        }]
+      },
+      options: {
+        ...chartOptions,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#8b949e',
+              font: { size: 11 },
+              callback: function(value) {
+                return 'Rp ' + value.toLocaleString('id-ID');
+              }
+            },
+            grid: {
+              color: 'rgba(48, 54, 61, 0.5)',
+              drawBorder: false
+            }
+          },
+          x: {
+            ticks: {
+              color: '#8b949e',
+              font: { size: 11 }
+            },
+            grid: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          ...chartOptions.plugins,
+          tooltip: {
+            ...chartOptions.plugins.tooltip,
+            callbacks: {
+              label: function(context) {
+                return 'Pendapatan: Rp ' + context.parsed.y.toLocaleString('id-ID');
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+}
+
+// Update Charts with Real Data
+async function updateCharts() {
+  if (!window.supabaseClient) return;
+
+  try {
+    const { data, error } = await window.supabaseClient
+      .from('rentals')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      console.log('No data for charts');
+      return;
+    }
+
+    // Process data for charts
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+    const last6Months = [];
+    const now = new Date();
+    
+    // Generate last 6 months
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      last6Months.push({
+        month: monthNames[d.getMonth()],
+        year: d.getFullYear(),
+        rentals: 0,
+        revenue: 0
+      });
+    }
+
+    // Count rentals and revenue per month
+    data.forEach(rental => {
+      const rentalDate = new Date(rental.created_at || rental.tanggal_sewa);
+      const monthIndex = last6Months.findIndex(m => 
+        m.month === monthNames[rentalDate.getMonth()] && 
+        m.year === rentalDate.getFullYear()
+      );
+      
+      if (monthIndex !== -1) {
+        last6Months[monthIndex].rentals++;
+        last6Months[monthIndex].revenue += parseInt(rental.price_total) || 0;
+      }
+    });
+
+    // Update Rental Chart (Bar)
+    if (rentalChart) {
+      rentalChart.data.labels = last6Months.map(m => m.month);
+      rentalChart.data.datasets[0].data = last6Months.map(m => m.rentals);
+      rentalChart.update('active');
+    }
+
+    // Update Status Chart (Doughnut)
+    if (statusChart) {
+      const pending = data.filter(r => r.status === 'MENUNGGU_VERIFIKASI').length;
+      const verified = data.filter(r => r.status === 'VERIFIED' || r.status === 'SELESAI').length;
+      const rejected = data.filter(r => r.status === 'REJECTED').length;
+      
+      statusChart.data.datasets[0].data = [pending, verified, rejected];
+      statusChart.update('active');
+    }
+
+    // Update Revenue Chart (Line)
+    if (revenueChart) {
+      revenueChart.data.labels = last6Months.map(m => m.month);
+      revenueChart.data.datasets[0].data = last6Months.map(m => m.revenue);
+      
+      // Update total revenue badge
+      const totalRev = last6Months.reduce((sum, m) => sum + m.revenue, 0);
+      const revenueBadge = document.querySelector('.lg\\:col-span-2 .bg-\\[\\#3fb950\\]\\/10');
+      if (revenueBadge) {
+        revenueBadge.textContent = 'Rp ' + totalRev.toLocaleString('id-ID') + ' Total';
+      }
+      
+      revenueChart.update('active');
+    }
+
+  } catch (error) {
+    console.error('Error updating charts:', error);
+  }
+}
+
+// Initialize charts when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initCharts();
+    updateCharts();
+  });
+} else {
+  initCharts();
+  updateCharts();
+}
+
+// Update charts when rentals are loaded
+const originalLoadRentals = loadRentals;
+loadRentals = async function() {
+  await originalLoadRentals();
+  updateCharts();
+};

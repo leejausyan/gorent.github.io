@@ -7,6 +7,9 @@
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  
   <!-- Custom Styles -->
   <link rel="stylesheet" href="admin-panel.css">
 </head>
@@ -249,6 +252,105 @@
               <p id="totalRevenue" class="text-3xl font-bold text-purple-400 mb-1">Rp 0</p>
               <p class="text-xs text-[#6e7681]">Dari semua transaksi</p>
             </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Analytics Section -->
+    <div class="px-4 md:px-8 py-4 md:py-6">
+      <!-- Section Header -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
+              <div class="p-2 bg-gradient-to-br from-[#1f6feb] to-[#58a6ff] rounded-xl">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </div>
+              <span class="gradient-text">Analytics Dashboard</span>
+            </h2>
+            <p class="text-sm md:text-base text-[#8b949e] mt-2 ml-14">Visualisasi data dan statistik peminjaman real-time</p>
+          </div>
+          <div class="hidden md:flex items-center gap-2">
+            <span class="px-3 py-2 bg-[#161b22] border border-[#30363d] rounded-lg text-xs text-[#8b949e] font-medium flex items-center gap-2">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#3fb950] opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-[#3fb950]"></span>
+              </span>
+              Live Data
+            </span>
+          </div>
+        </div>
+        <div class="mt-4 h-1 w-full bg-gradient-to-r from-[#1f6feb] via-[#58a6ff] to-transparent rounded-full"></div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        
+        <!-- Chart 1: Peminjaman Per Bulan -->
+        <div class="bg-gradient-to-br from-[#161b22] to-[#0d1117] border border-[#30363d] rounded-2xl p-6 hover:border-[#1f6feb]/50 transition-all duration-300 hover:shadow-xl hover:shadow-[#1f6feb]/10">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-[#1f6feb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Statistik Peminjaman
+              </h3>
+              <p class="text-xs text-[#8b949e] mt-1">6 bulan terakhir</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 bg-[#1f6feb]/10 text-[#58a6ff] text-xs font-medium rounded-full">Bulanan</span>
+            </div>
+          </div>
+          <div class="relative h-64">
+            <canvas id="rentalChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Status Distribution -->
+        <div class="bg-gradient-to-br from-[#161b22] to-[#0d1117] border border-[#30363d] rounded-2xl p-6 hover:border-purple-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+                </svg>
+                Distribusi Status
+              </h3>
+              <p class="text-xs text-[#8b949e] mt-1">Status peminjaman saat ini</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 bg-purple-500/10 text-purple-400 text-xs font-medium rounded-full">Live</span>
+            </div>
+          </div>
+          <div class="relative h-64 flex items-center justify-center">
+            <canvas id="statusChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: Pendapatan Per Bulan -->
+        <div class="bg-gradient-to-br from-[#161b22] to-[#0d1117] border border-[#30363d] rounded-2xl p-6 hover:border-[#3fb950]/50 transition-all duration-300 hover:shadow-xl hover:shadow-[#3fb950]/10 lg:col-span-2">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-[#3fb950]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+                Trend Pendapatan
+              </h3>
+              <p class="text-xs text-[#8b949e] mt-1">Grafik pendapatan 6 bulan terakhir</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 bg-[#3fb950]/10 text-[#3fb950] text-xs font-medium rounded-full">Rp 0 Total</span>
+            </div>
+          </div>
+          <div class="relative h-64">
+            <canvas id="revenueChart"></canvas>
           </div>
         </div>
 
