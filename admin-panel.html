@@ -6,125 +6,316 @@
   <title>Admin Panel - GoRent</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="admin-panel.css">
 </head>
-<body class="bg-gradient-to-br from-[#0d1117] via-[#161b22] to-[#0d1117] min-h-screen p-4">
+<body class="bg-[#0d1117] min-h-screen overflow-x-hidden">
 
   <!-- Loading Screen -->
   <div id="loadingScreen" class="fixed inset-0 bg-[#0d1117] flex items-center justify-center z-50">
     <div class="text-center">
-      <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1f6feb] mb-4"></div>
-      <p class="text-[#8b949e]">Memverifikasi akses...</p>
+      <div class="relative">
+        <div class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-transparent border-t-[#1f6feb] border-r-[#58a6ff]"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <svg class="w-8 h-8 text-[#58a6ff]" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+        </div>
+      </div>
+      <p class="text-[#8b949e] mt-6 text-lg font-medium">Memverifikasi akses...</p>
+      <div class="flex gap-1 justify-center mt-3">
+        <div class="w-2 h-2 bg-[#1f6feb] rounded-full animate-bounce" style="animation-delay: 0ms;"></div>
+        <div class="w-2 h-2 bg-[#1f6feb] rounded-full animate-bounce" style="animation-delay: 150ms;"></div>
+        <div class="w-2 h-2 bg-[#1f6feb] rounded-full animate-bounce" style="animation-delay: 300ms;"></div>
+      </div>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <div id="mainContent" class="max-w-7xl mx-auto hidden">
-    
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-[#1c2128] to-[#161b22] border border-[#30363d] rounded-2xl p-6 shadow-2xl mb-6">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <img src="images/JMMI-rm.png" alt="JMMI Logo" class="w-10 h-10 mr-3 object-contain" />
-          <div>
-            <h1 class="text-2xl font-bold text-white">Admin Panel</h1>
-            <p class="text-[#8b949e] text-sm">JMMI GoRent Management</p>
+  <!-- Sidebar Backdrop (Mobile) -->
+  <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-[#161b22] border-r border-[#30363d] z-40 transform transition-transform duration-300 ease-in-out">
+    <div class="flex flex-col h-full">
+      <!-- Logo Section -->
+      <div class="p-6 border-b border-[#30363d]">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <div class="absolute inset-0 bg-[#1f6feb] rounded-lg blur-md opacity-50"></div>
+              <img src="images/JMMI-rm.png" alt="JMMI Logo" class="relative w-10 h-10 object-contain" />
+            </div>
+            <div>
+              <h1 class="text-lg font-bold text-white">JMMI Admin</h1>
+              <p class="text-xs text-[#8b949e]">GoRent Panel</p>
+            </div>
           </div>
-        </div>
-        <div class="flex items-center gap-4">
-          <div class="text-right">
-            <p class="text-[#c9d1d9] font-semibold" id="userName">Admin</p>
-            <p class="text-[#8b949e] text-xs">Logged in</p>
-          </div>
-          <button 
-            id="logoutButton"
-            class="bg-red-900/30 border border-red-700/50 text-red-400 px-4 py-2 rounded-lg hover:bg-red-900/50 transition-all duration-200"
-          >
-            Logout
+          <!-- Close button (Mobile only) -->
+          <button id="closeSidebar" class="md:hidden p-2 hover:bg-[#21262d] rounded-lg transition-colors">
+            <svg class="w-5 h-5 text-[#8b949e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
           </button>
         </div>
       </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 p-4 space-y-2">
+        <a href="#dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#1f6feb] text-white font-medium shadow-lg shadow-[#1f6feb]/20">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="#rentals" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#8b949e] hover:bg-[#21262d] hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          Peminjaman
+        </a>
+        <a href="#analytics" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#8b949e] hover:bg-[#21262d] hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          Analytics
+        </a>
+        <a href="#settings" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#8b949e] hover:bg-[#21262d] hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          Settings
+        </a>
+      </nav>
+
+      <!-- User Section -->
+      <div class="p-4 border-t border-[#30363d]">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#1f6feb] to-[#58a6ff] flex items-center justify-center text-white font-bold">
+            A
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-white" id="userName">Admin</p>
+            <p class="text-xs text-[#8b949e]">Administrator</p>
+          </div>
+        </div>
+        <button 
+          id="logoutButton"
+          class="w-full flex items-center justify-center gap-2 bg-red-900/20 border border-red-700/50 text-red-400 px-4 py-2 rounded-lg hover:bg-red-900/40 transition-all duration-200"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          Logout
+        </button>
+      </div>
     </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div id="mainContent" class="md:ml-64 min-h-screen hidden">
+    
+    <!-- Top Bar -->
+    <header class="sticky top-0 z-30 bg-[#0d1117]/80 backdrop-blur-xl border-b border-[#30363d]">
+      <div class="px-4 md:px-8 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <!-- Hamburger Menu (Mobile) -->
+            <button id="menuToggle" class="md:hidden p-2 hover:bg-[#161b22] rounded-lg transition-colors">
+              <svg class="w-6 h-6 text-[#8b949e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
+            </button>
+            <div>
+              <h2 class="text-xl md:text-2xl font-bold text-white">Dashboard</h2>
+              <p class="text-xs md:text-sm text-[#8b949e] mt-1 hidden sm:block">Selamat datang kembali, Admin</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 md:gap-4">
+            <!-- Search Bar (Hidden on mobile) -->
+            <div class="relative hidden sm:block">
+              <input 
+                type="text" 
+                placeholder="Cari peminjaman..." 
+                class="w-48 md:w-64 pl-10 pr-4 py-2 bg-[#161b22] border border-[#30363d] rounded-lg text-sm text-white placeholder-[#6e7681] focus:border-[#1f6feb] focus:ring-2 focus:ring-[#1f6feb]/20 outline-none"
+              />
+              <svg class="absolute left-3 top-2.5 w-4 h-4 text-[#6e7681]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </div>
+            
+            <!-- Refresh Button -->
+            <button 
+              onclick="loadRentals()"
+              class="p-2 bg-[#161b22] border border-[#30363d] rounded-lg hover:border-[#1f6feb] transition-all duration-200 group"
+              title="Refresh Data"
+            >
+              <svg class="w-5 h-5 text-[#8b949e] group-hover:text-[#58a6ff] group-hover:rotate-180 transition-all duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+            </button>
+
+            <!-- Notifications (Hidden on small mobile) -->
+            <button class="hidden sm:block relative p-2 bg-[#161b22] border border-[#30363d] rounded-lg hover:border-[#1f6feb] transition-all duration-200">
+              <svg class="w-5 h-5 text-[#8b949e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+              <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <div class="bg-[#1c2128] border border-[#30363d] rounded-xl p-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-[#8b949e] text-sm">Total Peminjaman</p>
-            <p id="totalRentals" class="text-3xl font-bold text-[#c9d1d9] mt-1">0</p>
-          </div>
-          <div class="bg-[#1f6feb]/20 p-3 rounded-lg">
-            <svg class="w-8 h-8 text-[#1f6feb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
+    <div class="px-4 md:px-8 py-4 md:py-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        
+        <!-- Card 1: Total Peminjaman -->
+        <div class="group relative bg-gradient-to-br from-[#161b22] to-[#0d1117] border border-[#30363d] rounded-2xl p-6 hover:border-[#1f6feb] transition-all duration-300 hover:shadow-xl hover:shadow-[#1f6feb]/10 hover:-translate-y-1">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-[#1f6feb]/5 rounded-full blur-2xl group-hover:bg-[#1f6feb]/10 transition-all"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-4">
+              <div class="p-3 bg-[#1f6feb]/10 rounded-xl group-hover:bg-[#1f6feb]/20 transition-all">
+                <svg class="w-6 h-6 text-[#1f6feb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-[#3fb950] bg-[#3fb950]/10 px-2 py-1 rounded-full">+12%</span>
+            </div>
+            <div>
+              <p class="text-[#8b949e] text-sm font-medium mb-1">Total Peminjaman</p>
+              <p id="totalRentals" class="text-3xl font-bold text-white mb-1">0</p>
+              <p class="text-xs text-[#6e7681]">Total keseluruhan</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="bg-[#1c2128] border border-[#30363d] rounded-xl p-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-[#8b949e] text-sm">Menunggu Verifikasi</p>
-            <p id="pendingRentals" class="text-3xl font-bold text-yellow-400 mt-1">0</p>
-          </div>
-          <div class="bg-yellow-400/20 p-3 rounded-lg">
-            <svg class="w-8 h-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+        <!-- Card 2: Menunggu Verifikasi -->
+        <div class="group relative bg-gradient-to-br from-[#161b22] to-[#0d1117] border border-[#30363d] rounded-2xl p-6 hover:border-yellow-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/10 hover:-translate-y-1">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-500/5 rounded-full blur-2xl group-hover:bg-yellow-500/10 transition-all"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-4">
+              <div class="p-3 bg-yellow-500/10 rounded-xl group-hover:bg-yellow-500/20 transition-all">
+                <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-yellow-400 bg-yellow-400/10 px-2 py-1 rounded-full">Pending</span>
+            </div>
+            <div>
+              <p class="text-[#8b949e] text-sm font-medium mb-1">Menunggu Verifikasi</p>
+              <p id="pendingRentals" class="text-3xl font-bold text-yellow-400 mb-1">0</p>
+              <p class="text-xs text-[#6e7681]">Perlu ditindak lanjuti</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="bg-[#1c2128] border border-[#30363d] rounded-xl p-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-[#8b949e] text-sm">Terverifikasi</p>
-            <p id="verifiedRentals" class="text-3xl font-bold text-[#3fb950] mt-1">0</p>
-          </div>
-          <div class="bg-[#3fb950]/20 p-3 rounded-lg">
-            <svg class="w-8 h-8 text-[#3fb950]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+        <!-- Card 3: Terverifikasi -->
+        <div class="group relative bg-gradient-to-br from-[#161b22] to-[#0d1117] border border-[#30363d] rounded-2xl p-6 hover:border-[#3fb950]/50 transition-all duration-300 hover:shadow-xl hover:shadow-[#3fb950]/10 hover:-translate-y-1">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-[#3fb950]/5 rounded-full blur-2xl group-hover:bg-[#3fb950]/10 transition-all"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-4">
+              <div class="p-3 bg-[#3fb950]/10 rounded-xl group-hover:bg-[#3fb950]/20 transition-all">
+                <svg class="w-6 h-6 text-[#3fb950]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-[#3fb950] bg-[#3fb950]/10 px-2 py-1 rounded-full">Active</span>
+            </div>
+            <div>
+              <p class="text-[#8b949e] text-sm font-medium mb-1">Terverifikasi</p>
+              <p id="verifiedRentals" class="text-3xl font-bold text-[#3fb950] mb-1">0</p>
+              <p class="text-xs text-[#6e7681]">Sudah disetujui</p>
+            </div>
           </div>
         </div>
+
+        <!-- Card 4: Total Revenue -->
+        <div class="group relative bg-gradient-to-br from-[#161b22] to-[#0d1117] border border-[#30363d] rounded-2xl p-6 hover:border-purple-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-all"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-4">
+              <div class="p-3 bg-purple-500/10 rounded-xl group-hover:bg-purple-500/20 transition-all">
+                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-purple-400 bg-purple-400/10 px-2 py-1 rounded-full">+8%</span>
+            </div>
+            <div>
+              <p class="text-[#8b949e] text-sm font-medium mb-1">Total Pendapatan</p>
+              <p id="totalRevenue" class="text-3xl font-bold text-purple-400 mb-1">Rp 0</p>
+              <p class="text-xs text-[#6e7681]">Dari semua transaksi</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <!-- Rentals Table -->
-    <div class="bg-[#0d1117] border border-[#30363d] rounded-2xl p-6 shadow-2xl">
-      
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-bold text-[#c9d1d9]">Daftar Peminjaman</h2>
-        <button 
-          onclick="loadRentals()"
-          class="bg-[#1f6feb] text-white px-4 py-2 rounded-lg hover:bg-[#388bfd] transition-all duration-200 flex items-center gap-2"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-          </svg>
-          Refresh
-        </button>
-      </div>
+    <div class="px-4 md:px-8 pb-6 md:pb-8">
+      <div class="bg-[#161b22] border border-[#30363d] rounded-2xl overflow-hidden">
+        
+        <!-- Table Header -->
+        <div class="border-b border-[#30363d] bg-gradient-to-r from-[#161b22] to-[#0d1117] px-4 md:px-6 py-4">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h2 class="text-lg md:text-xl font-bold text-white flex items-center gap-2">
+                <span class="gradient-text">Daftar Peminjaman</span>
+                <span class="px-2 py-1 bg-[#1f6feb]/10 text-[#58a6ff] text-xs font-medium rounded-full">Live</span>
+              </h2>
+              <p class="text-xs md:text-sm text-[#8b949e] mt-1">Kelola semua peminjaman alat</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <!-- Filter Dropdown -->
+              <select class="flex-1 sm:flex-none px-3 md:px-4 py-2 bg-[#0d1117] border border-[#30363d] rounded-lg text-xs md:text-sm text-white focus:border-[#1f6feb] focus:ring-2 focus:ring-[#1f6feb]/20 outline-none">
+                <option value="all">Semua Status</option>
+                <option value="pending">Menunggu</option>
+                <option value="verified">Terverifikasi</option>
+                <option value="rejected">Ditolak</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-      <!-- Loading State -->
-      <div id="tableLoading" class="text-center py-12">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1f6feb] mb-4"></div>
-        <p class="text-[#8b949e]">Memuat data...</p>
-      </div>
+        <!-- Loading State -->
+        <div id="tableLoading" class="text-center py-16">
+          <div class="inline-flex flex-col items-center">
+            <div class="relative">
+              <div class="animate-spin rounded-full h-16 w-16 border-4 border-transparent border-t-[#1f6feb] border-r-[#58a6ff]"></div>
+              <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <svg class="w-8 h-8 text-[#58a6ff] animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+              </div>
+            </div>
+            <p class="text-[#8b949e] mt-4 font-medium">Memuat data peminjaman...</p>
+            <p class="text-[#6e7681] text-sm mt-1">Mohon tunggu sebentar</p>
+          </div>
+        </div>
 
-      <!-- Rentals List -->
-      <div id="rentalsList" class="hidden space-y-4">
-        <!-- Rentals will be populated here -->
-      </div>
+        <!-- Rentals List -->
+        <div id="rentalsList" class="hidden divide-y divide-[#30363d]">
+          <!-- Rentals will be populated here -->
+        </div>
 
-      <!-- Empty State -->
-      <div id="emptyState" class="hidden text-center py-12">
-        <svg class="w-16 h-16 text-[#6e7681] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
-        </svg>
-        <p class="text-[#8b949e]">Belum ada data peminjaman</p>
-      </div>
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16">
+          <div class="inline-flex flex-col items-center">
+            <div class="w-20 h-20 bg-[#1f6feb]/10 rounded-full flex items-center justify-center mb-4">
+              <svg class="w-10 h-10 text-[#1f6feb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+              </svg>
+            </div>
+            <p class="text-white font-semibold text-lg mb-2">Belum Ada Data Peminjaman</p>
+            <p class="text-[#8b949e] text-sm">Data akan muncul ketika ada peminjaman baru</p>
+          </div>
+        </div>
 
+      </div>
     </div>
 
   </div>
@@ -135,5 +326,50 @@
   <script src="config.js"></script>
   <!-- Admin Panel Script - Logic aplikasi -->
   <script src="admin.js"></script>
+
+  <!-- Mobile Menu Toggle Script -->
+  <script>
+    // Mobile Sidebar Toggle
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const menuToggle = document.getElementById('menuToggle');
+    const closeSidebar = document.getElementById('closeSidebar');
+
+    // Open sidebar
+    menuToggle?.addEventListener('click', () => {
+      sidebar.classList.add('active');
+      sidebarBackdrop.classList.remove('hidden');
+      document.body.style.overflow = 'hidden'; // Prevent scrolling
+    });
+
+    // Close sidebar
+    const closeSidebarFunc = () => {
+      sidebar.classList.remove('active');
+      sidebarBackdrop.classList.add('hidden');
+      document.body.style.overflow = ''; // Restore scrolling
+    };
+
+    closeSidebar?.addEventListener('click', closeSidebarFunc);
+    sidebarBackdrop?.addEventListener('click', closeSidebarFunc);
+
+    // Close sidebar when clicking nav link (mobile)
+    const navLinks = sidebar.querySelectorAll('nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 768) {
+          closeSidebarFunc();
+        }
+      });
+    });
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        sidebar.classList.remove('active');
+        sidebarBackdrop.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
 </body>
 </html>
