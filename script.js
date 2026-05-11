@@ -4,7 +4,7 @@ const fileInput = document.getElementById("bukti");
 const fileNameDisplay = document.getElementById("fileName");
 const identitasInput = document.getElementById("identitas");
 const identitasFileNameDisplay = document.getElementById("identitasFileName");
-const checkboxes = document.querySelectorAll(".item-checkbox");
+const quantityInputs = document.querySelectorAll(".item-quantity");
 const priceDisplay = document.getElementById("priceDisplay");
 const totalPriceElement = document.getElementById("totalPrice");
 const pricePerDayElement = document.getElementById("pricePerDay");
@@ -63,15 +63,17 @@ function calculateDays() {
 
 // Update price display
 function updatePriceDisplay() {
-  const selectedCheckboxes = document.querySelectorAll(".item-checkbox:checked");
-  
-  // Calculate base price (per day)
   let pricePerDay = 0;
   const selectedItems = [];
   
-  selectedCheckboxes.forEach((cb) => {
-    pricePerDay += parseInt(cb.dataset.price);
-    selectedItems.push(cb.value);
+  quantityInputs.forEach((input) => {
+    const qty = parseInt(input.value) || 0;
+    if (qty > 0) {
+      const itemName = input.dataset.item;
+      const itemPrice = parseInt(input.dataset.price);
+      pricePerDay += itemPrice * qty;
+      selectedItems.push(`${itemName} (${qty}x)`);
+    }
   });
   
   // Calculate total days
@@ -81,7 +83,7 @@ function updatePriceDisplay() {
   const totalPrice = pricePerDay * totalDays;
   
   // Update display
-  if (selectedCheckboxes.length > 0) {
+  if (selectedItems.length > 0) {
     priceDisplay.classList.remove("hidden");
     pricePerDayElement.textContent = `Rp ${pricePerDay.toLocaleString("id-ID")}`;
     totalDaysElement.textContent = `${totalDays} hari`;
@@ -116,18 +118,24 @@ identitasInput.addEventListener("change", (e) => {
   }
 });
 
-// Handle item selection
-checkboxes.forEach((checkbox) => {
-  checkbox.addEventListener("change", () => {
-    const selectedCheckboxes = document.querySelectorAll(".item-checkbox:checked");
-    
-    // Limit to 4 items
-    if (selectedCheckboxes.length > 4) {
-      checkbox.checked = false;
-      alert("Maksimal 4 alat yang dapat dipilih!");
+// Handle item quantity changes
+quantityInputs.forEach((input) => {
+  input.addEventListener("change", () => {
+    const qty = parseInt(input.value) || 0;
+    if (qty < 0) {
+      input.value = 0;
+      alert("Jumlah tidak boleh negatif!");
       return;
     }
-    
+    if (qty > 99) {
+      input.value = 99;
+      alert("Jumlah maksimal 99!");
+      return;
+    }
+    updatePriceDisplay();
+  });
+  
+  input.addEventListener("input", () => {
     updatePriceDisplay();
   });
 });
@@ -244,9 +252,20 @@ form.addEventListener("submit", async (e) => {
   }
 
   // Validate at least one item is selected
-  const selectedCheckboxes = document.querySelectorAll(".item-checkbox:checked");
-  if (selectedCheckboxes.length === 0) {
-    alert("Pilih minimal 1 alat untuk dipinjam!");
+  let selectedItems = [];
+  quantityInputs.forEach((input) => {
+    const qty = parseInt(input.value) || 0;
+    if (qty > 0) {
+      selectedItems.push({
+        name: input.dataset.item,
+        qty: qty,
+        price: parseInt(input.dataset.price)
+      });
+    }
+  });
+  
+  if (selectedItems.length === 0) {
+    alert("Pilih minimal 1 alat dengan jumlah > 0 untuk dipinjam!");
     return;
   }
 
@@ -283,12 +302,12 @@ form.addEventListener("submit", async (e) => {
   statusText.innerText = "Mengecek ketersediaan alat...";
 
   try {
-    // Get selected items
-    const selectedItems = Array.from(selectedCheckboxes).map(cb => cb.value);
+    // Get selected items (already computed above)
+    const selectedItemNames = selectedItems.map(item => item.name);
 
     // Check availability
     console.log('🔍 Checking availability before booking...');
-    const availabilityCheck = await checkItemAvailability(selectedItems, tanggalSewa, tanggalKembali);
+    const availabilityCheck = await checkItemAvailability(selectedItemNames, tanggalSewa, tanggalKembali);
 
     if (!availabilityCheck.available) {
       // Show error message with details
@@ -320,18 +339,15 @@ form.addEventListener("submit", async (e) => {
     // Update status to uploading
     statusText.innerText = "Mengirim data...";
 
-    // Prepare items data (item_1, item_2, item_3, item_4)
-    const itemsData = {
-      item_1: "",
-      item_2: "",
-      item_3: "",
-      item_4: ""
-    };
-
+    // Prepare items data - store as JSON for better flexibility with quantities
+    // Format: "Camera x2, Handie Talkie x10, etc"
+    const itemsDescription = selectedItems
+      .map(item => `${item.name} x${item.qty}`)
+      .join(", ");
+    
     let pricePerDay = 0;
-    selectedCheckboxes.forEach((cb, index) => {
-      itemsData[`item_${index + 1}`] = cb.value;
-      pricePerDay += parseInt(cb.dataset.price);
+    selectedItems.forEach(item => {
+      pricePerDay += item.price * item.qty;
     });
     
     // Calculate total days and total price
@@ -395,7 +411,10 @@ form.addEventListener("submit", async (e) => {
       alamat: document.getElementById("alamat").value,
       instansi: document.getElementById("instansi").value,
       keperluan: document.getElementById("keperluan").value,
-      ...itemsData,
+      item_1: itemsDescription,
+      item_2: "",
+      item_3: "",
+      item_4: "",
       price_total: totalPrice,
       tanggal_sewa: tanggalSewa,
       tanggal_kembali: tanggalKembali,
